@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding)
+        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dtype=torch.bfloat16)
         self.max_pool1 = nn.MaxPool3d(kernel_size=2)
         self.max_pool2 = nn.MaxPool3d(kernel_size=3)
 
@@ -27,7 +27,7 @@ stride = 2
 padding = 2
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding]

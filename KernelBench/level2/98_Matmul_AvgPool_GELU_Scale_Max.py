@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, pool_kernel_size, scale_factor):
         super(Model, self).__init__()
-        self.matmul = nn.Linear(in_features, out_features)
+        self.matmul = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
         self.avg_pool = nn.AvgPool1d(kernel_size=pool_kernel_size)
         self.scale_factor = scale_factor
 
@@ -33,7 +33,7 @@ pool_kernel_size = 16
 scale_factor = 2.0
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features)]
+    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_features, out_features, pool_kernel_size, scale_factor]

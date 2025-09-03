@@ -10,8 +10,8 @@ class Model(nn.Module):
         :param num_heads: Number of attention heads
         """
         super(Model, self).__init__()
-        self.attn = nn.MultiheadAttention(embed_dim, num_heads)
-        self.norm = nn.LayerNorm(embed_dim)
+        self.attn = nn.MultiheadAttention(embed_dim, num_heads, dtype=torch.bfloat16)
+        self.norm = nn.LayerNorm(embed_dim, dtype=torch.bfloat16)
 
     def forward(self, x):
         """
@@ -34,7 +34,7 @@ image_height = 128
 image_width = 128
 
 def get_inputs():
-    return [torch.rand(batch_size, num_channels, image_height, image_width)]
+    return [torch.rand(batch_size, num_channels, image_height, image_width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [embed_dim, num_heads]

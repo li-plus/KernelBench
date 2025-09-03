@@ -8,7 +8,7 @@ class Model(nn.Module):
     """
     def __init__(self, input_size, hidden_size, scale_factor, clamp_min, clamp_max):
         super(Model, self).__init__()
-        self.matmul = nn.Linear(input_size, hidden_size)
+        self.matmul = nn.Linear(input_size, hidden_size, dtype=torch.bfloat16)
         self.scale_factor = scale_factor
         self.clamp_min = clamp_min
         self.clamp_max = clamp_max
@@ -37,7 +37,7 @@ clamp_min = -10.0
 clamp_max = 10.0
 
 def get_inputs():
-    return [torch.rand(batch_size, input_size)]
+    return [torch.rand(batch_size, input_size, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [input_size, hidden_size, scale_factor, clamp_min, clamp_max]

@@ -37,10 +37,10 @@ class Model(nn.Module):
         clusters = cluster_size + ghost_clusters
 
         # The `clusters` weights are the `(w,b)` in the paper
-        self.clusters = nn.Parameter(init_sc * th.randn(feature_size, clusters))
-        self.batch_norm = nn.BatchNorm1d(clusters)
+        self.clusters = nn.Parameter(init_sc * th.randn(feature_size, clusters, dtype=torch.bfloat16))
+        self.batch_norm = nn.BatchNorm1d(clusters, dtype=torch.bfloat16)
         # The `clusters2` weights are the visual words `c_k` in the paper
-        self.clusters2 = nn.Parameter(init_sc * th.randn(1, feature_size, cluster_size))
+        self.clusters2 = nn.Parameter(init_sc * th.randn(1, feature_size, cluster_size, dtype=torch.bfloat16))
         self.out_dim = self.cluster_size * feature_size
 
     def forward(self, x, mask=None):
@@ -92,7 +92,7 @@ feature_size = 512
 ghost_clusters = 16
 
 def get_inputs():
-  return [torch.rand(batch_size, num_features, feature_size)]
+  return [torch.rand(batch_size, num_features, feature_size, dtype=torch.bfloat16)]
 
 def get_init_inputs():
   return [num_clusters, feature_size, ghost_clusters]

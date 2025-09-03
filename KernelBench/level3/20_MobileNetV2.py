@@ -33,18 +33,18 @@ class Model(nn.Module):
             layers = []
             if expand_ratio != 1:
                 # Pointwise convolution
-                layers.append(nn.Conv2d(inp, hidden_dim, 1, 1, 0, bias=False))
-                layers.append(nn.BatchNorm2d(hidden_dim))
+                layers.append(nn.Conv2d(inp, hidden_dim, 1, 1, 0, bias=False, dtype=torch.bfloat16))
+                layers.append(nn.BatchNorm2d(hidden_dim, dtype=torch.bfloat16))
                 layers.append(nn.ReLU6(inplace=True))
 
             layers.extend([
                 # Depthwise convolution
-                nn.Conv2d(hidden_dim, hidden_dim, 3, stride, 1, groups=hidden_dim, bias=False),
-                nn.BatchNorm2d(hidden_dim),
+                nn.Conv2d(hidden_dim, hidden_dim, 3, stride, 1, groups=hidden_dim, bias=False, dtype=torch.bfloat16),
+                nn.BatchNorm2d(hidden_dim, dtype=torch.bfloat16),
                 nn.ReLU6(inplace=True),
                 # Pointwise linear convolution
-                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False),
-                nn.BatchNorm2d(oup),
+                nn.Conv2d(hidden_dim, oup, 1, 1, 0, bias=False, dtype=torch.bfloat16),
+                nn.BatchNorm2d(oup, dtype=torch.bfloat16),
             ])
 
             if use_res_connect:
@@ -67,8 +67,8 @@ class Model(nn.Module):
         ]
 
         # Building first layer
-        features = [nn.Conv2d(3, input_channel, 3, 2, 1, bias=False),
-                    nn.BatchNorm2d(input_channel),
+        features = [nn.Conv2d(3, input_channel, 3, 2, 1, bias=False, dtype=torch.bfloat16),
+                    nn.BatchNorm2d(input_channel, dtype=torch.bfloat16),
                     nn.ReLU6(inplace=True)]
 
         # Building inverted residual blocks
@@ -80,8 +80,8 @@ class Model(nn.Module):
                 input_channel = output_channel
 
         # Building last several layers
-        features.append(nn.Conv2d(input_channel, last_channel, 1, 1, 0, bias=False))
-        features.append(nn.BatchNorm2d(last_channel))
+        features.append(nn.Conv2d(input_channel, last_channel, 1, 1, 0, bias=False, dtype=torch.bfloat16))
+        features.append(nn.BatchNorm2d(last_channel, dtype=torch.bfloat16))
         features.append(nn.ReLU6(inplace=True))
 
         # Final layer
@@ -92,7 +92,7 @@ class Model(nn.Module):
         # Linear layer
         self.classifier = nn.Sequential(
             nn.Dropout(0.0),
-            nn.Linear(last_channel, num_classes),
+            nn.Linear(last_channel, num_classes, dtype=torch.bfloat16),
         )
 
         # Weight initialization
@@ -125,7 +125,7 @@ batch_size = 10
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, 3, 224, 224)]
+    return [torch.rand(batch_size, 3, 224, 224, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [num_classes]

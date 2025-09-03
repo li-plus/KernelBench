@@ -22,7 +22,7 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.conv_transpose3d = nn.ConvTranspose3d(in_channels, out_channels, (kernel_size, kernel_size, kernel_size), 
                                                 stride=stride, padding=padding, output_padding=output_padding, 
-                                                dilation=dilation, groups=groups, bias=bias)
+                                                dilation=dilation, groups=groups, bias=bias, dtype=torch.bfloat16)
         
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -46,7 +46,7 @@ height = 96
 width = 96
 
 def get_inputs():
-    x = torch.rand(batch_size, in_channels, depth, height, width)
+    x = torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)
     return [x]
 
 def get_init_inputs():

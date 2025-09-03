@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, kernel_size, scale_factor):
         super(Model, self).__init__()
-        self.matmul = nn.Linear(in_features, out_features)
+        self.matmul = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
         self.max_pool = nn.MaxPool1d(kernel_size)
         self.scale_factor = scale_factor
 
@@ -32,7 +32,7 @@ kernel_size = 2
 scale_factor = 0.5
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features)]
+    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_features, out_features, kernel_size, scale_factor]

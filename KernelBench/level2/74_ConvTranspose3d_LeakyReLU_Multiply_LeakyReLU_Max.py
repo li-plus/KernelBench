@@ -8,8 +8,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, output_padding, multiplier_shape):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, output_padding=output_padding)
-        self.multiplier = nn.Parameter(torch.randn(multiplier_shape))
+        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, output_padding=output_padding, dtype=torch.bfloat16)
+        self.multiplier = nn.Parameter(torch.randn(multiplier_shape, dtype=torch.bfloat16))
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.2)
         self.max_pool = nn.MaxPool3d(kernel_size=2)
 
@@ -32,7 +32,7 @@ output_padding = 1
 multiplier_shape = (out_channels, 1, 1, 1)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding, output_padding, multiplier_shape]

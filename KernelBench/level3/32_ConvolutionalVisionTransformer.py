@@ -21,9 +21,9 @@ class Model(nn.Module):
         self.image_size = image_size
         self.embed_dim = embed_dim
 
-        self.conv1 = nn.Conv2d(in_channels, embed_dim, kernel_size=patch_size, stride=patch_size)
+        self.conv1 = nn.Conv2d(in_channels, embed_dim, kernel_size=patch_size, stride=patch_size, dtype=torch.bfloat16)
         num_patches = (image_size // patch_size) ** 2  # Total number of patches after conv
-        self.linear_proj = nn.Linear(embed_dim * num_patches, embed_dim)
+        self.linear_proj = nn.Linear(embed_dim * num_patches, embed_dim, dtype=torch.bfloat16)
 
         self.transformer_layers = nn.ModuleList([
             nn.TransformerEncoderLayer(
@@ -31,12 +31,13 @@ class Model(nn.Module):
                 nhead=num_heads,
                 dim_feedforward=int(embed_dim * mlp_ratio),
                 dropout=0.0,
-                batch_first=True
+                batch_first=True,
+                dtype=torch.bfloat16,
             ) for _ in range(num_layers)
         ])
 
-        self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim))
-        self.fc_out = nn.Linear(embed_dim, num_classes)
+        self.cls_token = nn.Parameter(torch.zeros(1, 1, embed_dim, dtype=torch.bfloat16))
+        self.fc_out = nn.Linear(embed_dim, num_classes, dtype=torch.bfloat16)
 
     def forward(self, x):
         """
@@ -66,7 +67,7 @@ num_heads = 4
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, image_size, image_size)]
+    return [torch.rand(batch_size, in_channels, image_size, image_size, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [num_classes, embed_dim, num_heads]

@@ -16,7 +16,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels: int, out_channels: int, kernel_size: tuple, stride: int = 1, padding: tuple = (0, 0), dilation: tuple = (1, 1), bias: bool = False):
         super(Model, self).__init__()
-        self.conv2d = nn.Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dilation=dilation, bias=bias)
+        self.conv2d = nn.Conv2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dilation=dilation, bias=bias, dtype=torch.bfloat16)
         
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -42,7 +42,7 @@ padding = (2, 4)
 dilation = (2, 3)
 
 def get_inputs():
-    x = torch.rand(batch_size, in_channels, height, width)
+    x = torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)
     return [x]
 
 def get_init_inputs():

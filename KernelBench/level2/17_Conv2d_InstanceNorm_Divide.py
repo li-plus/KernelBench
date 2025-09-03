@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, divide_by):
         super(Model, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size)
-        self.instance_norm = nn.InstanceNorm2d(out_channels)
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
+        self.instance_norm = nn.InstanceNorm2d(out_channels, dtype=torch.bfloat16)
         self.divide_by = divide_by
 
     def forward(self, x):
@@ -25,7 +25,7 @@ kernel_size = 3
 divide_by = 2.0
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, divide_by]

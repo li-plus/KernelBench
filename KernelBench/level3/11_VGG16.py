@@ -14,56 +14,56 @@ class Model(nn.Module):
         # VGG16 architecture: 5 blocks of convolutional layers followed by max pooling
         self.features = nn.Sequential(
             # Block 1
-            nn.Conv2d(3, 64, kernel_size=3, padding=1),
+            nn.Conv2d(3, 64, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
-            nn.Conv2d(64, 64, kernel_size=3, padding=1),
+            nn.Conv2d(64, 64, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
             # Block 2
-            nn.Conv2d(64, 128, kernel_size=3, padding=1),
+            nn.Conv2d(64, 128, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
-            nn.Conv2d(128, 128, kernel_size=3, padding=1),
+            nn.Conv2d(128, 128, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
             # Block 3
-            nn.Conv2d(128, 256, kernel_size=3, padding=1),
+            nn.Conv2d(128, 256, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
-            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
-            nn.Conv2d(256, 256, kernel_size=3, padding=1),
+            nn.Conv2d(256, 256, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
             # Block 4
-            nn.Conv2d(256, 512, kernel_size=3, padding=1),
+            nn.Conv2d(256, 512, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2),
             
             # Block 5
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
-            nn.Conv2d(512, 512, kernel_size=3, padding=1),
+            nn.Conv2d(512, 512, kernel_size=3, padding=1, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
         
         # Fully connected layers
         self.classifier = nn.Sequential(
-            nn.Linear(512 * 7 * 7, 4096),
+            nn.Linear(512 * 7 * 7, 4096, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
             nn.Dropout(p=0.0),
-            nn.Linear(4096, 4096),
+            nn.Linear(4096, 4096, dtype=torch.bfloat16),
             nn.ReLU(inplace=True),
             nn.Dropout(p=0.0),
-            nn.Linear(4096, num_classes)
+            nn.Linear(4096, num_classes, dtype=torch.bfloat16)
         )
     
     def forward(self, x):
@@ -83,7 +83,7 @@ batch_size = 10
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, 3, 224, 224)]
+    return [torch.rand(batch_size, 3, 224, 224, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [num_classes]

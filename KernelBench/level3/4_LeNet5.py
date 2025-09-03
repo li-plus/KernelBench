@@ -12,13 +12,13 @@ class Model(nn.Module):
         super(Model, self).__init__()
         
         # Convolutional layers
-        self.conv1 = nn.Conv2d(in_channels=1, out_channels=6, kernel_size=5, stride=1)
-        self.conv2 = nn.Conv2d(in_channels=6, out_channels=16, kernel_size=5, stride=1)
+        self.conv1 = nn.Conv2d(in_channels=1, out_channels=6, kernel_size=5, stride=1, dtype=torch.bfloat16)
+        self.conv2 = nn.Conv2d(in_channels=6, out_channels=16, kernel_size=5, stride=1, dtype=torch.bfloat16)
         
         # Fully connected layers
-        self.fc1 = nn.Linear(in_features=16*5*5, out_features=120)
-        self.fc2 = nn.Linear(in_features=120, out_features=84)
-        self.fc3 = nn.Linear(in_features=84, out_features=num_classes)
+        self.fc1 = nn.Linear(in_features=16*5*5, out_features=120, dtype=torch.bfloat16)
+        self.fc2 = nn.Linear(in_features=120, out_features=84, dtype=torch.bfloat16)
+        self.fc3 = nn.Linear(in_features=84, out_features=num_classes, dtype=torch.bfloat16)
     
     def forward(self, x):
         """
@@ -54,7 +54,7 @@ batch_size = 4096
 num_classes = 20
 
 def get_inputs():
-    return [torch.rand(batch_size, 1, 32, 32)]
+    return [torch.rand(batch_size, 1, 32, 32, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [num_classes]

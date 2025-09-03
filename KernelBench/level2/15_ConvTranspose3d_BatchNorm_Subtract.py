@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, bias=True):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias)
+        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias, dtype=torch.bfloat16)
         self.batch_norm = nn.BatchNorm3d(out_channels)
 
     def forward(self, x):
@@ -25,7 +25,7 @@ stride = 2
 padding = 1
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding]

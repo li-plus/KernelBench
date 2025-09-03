@@ -27,11 +27,11 @@ class Model(nn.Module):
         super().__init__()
         assert n_embd % n_head == 0
         # key, query, value projections for all heads, but in a batch
-        self.c_attn = nn.Linear(n_embd, 3 * n_embd)
+        self.c_attn = nn.Linear(n_embd, 3 * n_embd, dtype=torch.bfloat16)
         # output projection
-        self.c_proj = nn.Linear(n_embd, n_embd)
+        self.c_proj = nn.Linear(n_embd, n_embd, dtype=torch.bfloat16)
         # causal mask to ensure that attention is only applied to the left in the input sequence
-        self.register_buffer("bias", torch.tril(torch.ones(max_seqlen, max_seqlen))
+        self.register_buffer("bias", torch.tril(torch.ones(max_seqlen, max_seqlen, dtype=torch.bfloat16))
                                      .view(1, 1, max_seqlen, max_seqlen))
         self.n_head = n_head
         self.n_embd = n_embd
@@ -61,7 +61,7 @@ n_embd = 768  # Hidden dimension, typical for BERT-base size
 n_head = 12   # Number of attention heads, typical for BERT-base size
 
 def get_inputs():
-    return [torch.rand(batch_size, max_seqlen, n_embd)]
+    return [torch.rand(batch_size, max_seqlen, n_embd, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [n_embd, n_head, max_seqlen]

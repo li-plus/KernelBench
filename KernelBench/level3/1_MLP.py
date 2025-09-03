@@ -15,11 +15,11 @@ class Model(nn.Module):
         current_input_size = input_size
         
         for layer_size in layer_sizes:
-            layers.append(nn.Linear(current_input_size, layer_size))
+            layers.append(nn.Linear(current_input_size, layer_size, dtype=torch.bfloat16))
             layers.append(nn.ReLU())
             current_input_size = layer_size
         
-        layers.append(nn.Linear(current_input_size, output_size))
+        layers.append(nn.Linear(current_input_size, output_size, dtype=torch.bfloat16))
         
         self.network = nn.Sequential(*layers)
     
@@ -37,7 +37,7 @@ layer_sizes = [16384, 16384]
 output_size = 8192
 
 def get_inputs():
-    return [torch.rand(batch_size, input_size)]
+    return [torch.rand(batch_size, input_size, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [input_size, layer_sizes, output_size]

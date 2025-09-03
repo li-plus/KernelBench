@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, groups, min_value, max_value, dropout_p):
         super(Model, self).__init__()
-        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size)
-        self.norm = nn.GroupNorm(groups, out_channels)
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
+        self.norm = nn.GroupNorm(groups, out_channels, dtype=torch.bfloat16)
         self.dropout = nn.Dropout(dropout_p)
 
     def forward(self, x):
@@ -30,7 +30,7 @@ max_value = 1.0
 dropout_p = 0.2
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, groups, min_value, max_value, dropout_p]

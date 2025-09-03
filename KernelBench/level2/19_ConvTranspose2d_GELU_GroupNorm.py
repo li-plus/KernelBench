@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, groups, num_groups):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride)
-        self.group_norm = nn.GroupNorm(num_groups=num_groups, num_channels=out_channels)
+        self.conv_transpose = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride, dtype=torch.bfloat16)
+        self.group_norm = nn.GroupNorm(num_groups=num_groups, num_channels=out_channels, dtype=torch.bfloat16)
 
     def forward(self, x):
         x = self.conv_transpose(x)
@@ -26,7 +26,7 @@ groups = 8
 num_groups = 8
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, groups, num_groups]

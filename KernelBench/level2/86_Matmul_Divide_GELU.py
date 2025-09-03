@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, input_size, output_size, divisor):
         super(Model, self).__init__()
-        self.linear = nn.Linear(input_size, output_size)
+        self.linear = nn.Linear(input_size, output_size, dtype=torch.bfloat16)
         self.divisor = divisor
 
     def forward(self, x):
@@ -28,7 +28,7 @@ output_size = 8192
 divisor = 10.0
 
 def get_inputs():
-    return [torch.rand(batch_size, input_size)]
+    return [torch.rand(batch_size, input_size, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [input_size, output_size, divisor]

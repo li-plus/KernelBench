@@ -7,9 +7,9 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, multiplier_shape, clamp_min, clamp_max):
         super(Model, self).__init__()
-        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size)
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
         self.multiplier = nn.Parameter(torch.randn(multiplier_shape))
-        self.instance_norm = nn.InstanceNorm3d(out_channels)
+        self.instance_norm = nn.InstanceNorm3d(out_channels, dtype=torch.bfloat16)
         self.clamp_min = clamp_min
         self.clamp_max = clamp_max
 
@@ -32,7 +32,7 @@ clamp_min = -1.0
 clamp_max = 1.0
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, multiplier_shape, clamp_min, clamp_max]

@@ -12,8 +12,8 @@ class Model(nn.Module):
         super(Model, self).__init__()
         
         # Define the EfficientNetB2 architecture components
-        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(32)
+        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False, dtype=torch.bfloat16)
+        self.bn1 = nn.BatchNorm2d(32, dtype=torch.bfloat16)
         self.relu = nn.ReLU(inplace=True)
         
         # Define the MBConv blocks
@@ -24,10 +24,10 @@ class Model(nn.Module):
         self.mbconv5 = self._make_mbconv_block(288, 384, 1, 6)
         
         # Final layers
-        self.conv_final = nn.Conv2d(384, 1408, kernel_size=1, stride=1, padding=0, bias=False)
-        self.bn_final = nn.BatchNorm2d(1408)
+        self.conv_final = nn.Conv2d(384, 1408, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16)
+        self.bn_final = nn.BatchNorm2d(1408, dtype=torch.bfloat16)
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(1408, num_classes)
+        self.fc = nn.Linear(1408, num_classes, dtype=torch.bfloat16)
     
     def _make_mbconv_block(self, in_channels, out_channels, stride, expand_ratio):
         """
@@ -44,25 +44,25 @@ class Model(nn.Module):
         
         # Expansion phase
         if expand_ratio != 1:
-            layers.append(nn.Conv2d(in_channels, expanded_channels, kernel_size=1, stride=1, padding=0, bias=False))
-            layers.append(nn.BatchNorm2d(expanded_channels))
+            layers.append(nn.Conv2d(in_channels, expanded_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16))
+            layers.append(nn.BatchNorm2d(expanded_channels, dtype=torch.bfloat16))
             layers.append(nn.ReLU(inplace=True))
         
         # Depthwise convolution
-        layers.append(nn.Conv2d(expanded_channels, expanded_channels, kernel_size=3, stride=stride, padding=1, groups=expanded_channels, bias=False))
-        layers.append(nn.BatchNorm2d(expanded_channels))
+        layers.append(nn.Conv2d(expanded_channels, expanded_channels, kernel_size=3, stride=stride, padding=1, groups=expanded_channels, bias=False, dtype=torch.bfloat16))
+        layers.append(nn.BatchNorm2d(expanded_channels, dtype=torch.bfloat16))
         layers.append(nn.ReLU(inplace=True))
         
         # Squeeze and Excitation
         layers.append(nn.AdaptiveAvgPool2d((1, 1)))
-        layers.append(nn.Conv2d(expanded_channels, expanded_channels // 4, kernel_size=1, stride=1, padding=0, bias=False))
+        layers.append(nn.Conv2d(expanded_channels, expanded_channels // 4, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16))
         layers.append(nn.ReLU(inplace=True))
-        layers.append(nn.Conv2d(expanded_channels // 4, expanded_channels, kernel_size=1, stride=1, padding=0, bias=False))
+        layers.append(nn.Conv2d(expanded_channels // 4, expanded_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16))
         layers.append(nn.Sigmoid())
         
         # Output phase
-        layers.append(nn.Conv2d(expanded_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=False))
-        layers.append(nn.BatchNorm2d(out_channels))
+        layers.append(nn.Conv2d(expanded_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16))
+        layers.append(nn.BatchNorm2d(out_channels, dtype=torch.bfloat16))
         
         return nn.Sequential(*layers)
     
@@ -90,7 +90,7 @@ batch_size = 2
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, 3, 224, 224)]
+    return [torch.rand(batch_size, 3, 224, 224, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [num_classes]

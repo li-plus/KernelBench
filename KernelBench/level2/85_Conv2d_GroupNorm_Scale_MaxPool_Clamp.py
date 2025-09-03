@@ -7,9 +7,9 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, num_groups, scale_shape, maxpool_kernel_size, clamp_min, clamp_max):
         super(Model, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size)
-        self.group_norm = nn.GroupNorm(num_groups, out_channels)
-        self.scale = nn.Parameter(torch.ones(scale_shape))
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
+        self.group_norm = nn.GroupNorm(num_groups, out_channels, dtype=torch.bfloat16)
+        self.scale = nn.Parameter(torch.ones(scale_shape, dtype=torch.bfloat16))
         self.maxpool = nn.MaxPool2d(kernel_size=maxpool_kernel_size)
         self.clamp_min = clamp_min
         self.clamp_max = clamp_max
@@ -40,7 +40,7 @@ clamp_min = 0.0
 clamp_max = 1.0
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, num_groups, scale_shape, maxpool_kernel_size, clamp_min, clamp_max]

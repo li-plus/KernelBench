@@ -13,7 +13,7 @@ class Model(nn.Module):
             num_features (int): Number of features in the input tensor.
         """
         super(Model, self).__init__()
-        self.inorm = nn.InstanceNorm2d(num_features=num_features)
+        self.inorm = nn.InstanceNorm2d(num_features=num_features, dtype=torch.bfloat16)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -33,7 +33,7 @@ dim1 = 512
 dim2 = 512
 
 def get_inputs():
-    x = torch.rand(batch_size, features, dim1, dim2)
+    x = torch.rand(batch_size, features, dim1, dim2, dtype=torch.bfloat16)
     return [x]
 
 def get_init_inputs():

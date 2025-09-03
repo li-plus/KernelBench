@@ -8,7 +8,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, dim):
         super(Model, self).__init__()
-        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size)
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
         self.dim = dim
 
     def forward(self, x):
@@ -31,7 +31,7 @@ kernel_size = 3
 dim = 2  # Dimension along which to apply minimum operation (e.g., depth)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, D, H, W)]
+    return [torch.rand(batch_size, in_channels, D, H, W, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, dim]

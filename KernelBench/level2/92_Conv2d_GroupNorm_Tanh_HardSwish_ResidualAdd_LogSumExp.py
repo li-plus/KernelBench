@@ -8,8 +8,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, groups, eps=1e-5):
         super(Model, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size)
-        self.group_norm = nn.GroupNorm(groups, out_channels, eps=eps)
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
+        self.group_norm = nn.GroupNorm(groups, out_channels, eps=eps, dtype=torch.bfloat16)
         self.tanh = nn.Tanh()
         self.hard_swish = nn.Hardswish()
 
@@ -36,7 +36,7 @@ kernel_size = 3
 groups = 16
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, groups]

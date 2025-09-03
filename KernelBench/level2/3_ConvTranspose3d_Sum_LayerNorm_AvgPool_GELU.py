@@ -7,9 +7,9 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, output_padding, sum_weight, norm_shape, pool_kernel_size):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, output_padding=output_padding)
-        self.sum_weight = nn.Parameter(torch.tensor(sum_weight))
-        self.norm = nn.LayerNorm(norm_shape)
+        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, output_padding=output_padding, dtype=torch.bfloat16)
+        self.sum_weight = nn.Parameter(torch.tensor(sum_weight, dtype=torch.bfloat16))
+        self.norm = nn.LayerNorm(norm_shape, dtype=torch.bfloat16)
         self.avg_pool = nn.AvgPool3d(kernel_size=pool_kernel_size)
         self.gelu = nn.GELU()
 
@@ -34,7 +34,7 @@ norm_shape = (out_channels,)
 pool_kernel_size = (2, 2, 2)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding, output_padding, sum_weight, norm_shape, pool_kernel_size]

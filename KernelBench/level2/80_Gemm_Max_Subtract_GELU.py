@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, max_dim):
         super(Model, self).__init__()
-        self.gemm = nn.Linear(in_features, out_features)
+        self.gemm = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
         self.max_dim = max_dim
 
     def forward(self, x):
@@ -30,7 +30,7 @@ out_features = 8192
 max_dim = 1
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features)]
+    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_features, out_features, max_dim]

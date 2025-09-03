@@ -16,24 +16,24 @@ class Model(nn.Module):
         super(Model, self).__init__()
         
         # 1x1 convolution branch
-        self.branch1x1 = nn.Conv2d(in_channels, out_1x1, kernel_size=1)
+        self.branch1x1 = nn.Conv2d(in_channels, out_1x1, kernel_size=1, dtype=torch.bfloat16)
         
         # 3x3 convolution branch
         self.branch3x3 = nn.Sequential(
-            nn.Conv2d(in_channels, reduce_3x3, kernel_size=1),
-            nn.Conv2d(reduce_3x3, out_3x3, kernel_size=3, padding=1)
+            nn.Conv2d(in_channels, reduce_3x3, kernel_size=1, dtype=torch.bfloat16),
+            nn.Conv2d(reduce_3x3, out_3x3, kernel_size=3, padding=1, dtype=torch.bfloat16)
         )
         
         # 5x5 convolution branch
         self.branch5x5 = nn.Sequential(
-            nn.Conv2d(in_channels, reduce_5x5, kernel_size=1),
-            nn.Conv2d(reduce_5x5, out_5x5, kernel_size=5, padding=2)
+            nn.Conv2d(in_channels, reduce_5x5, kernel_size=1, dtype=torch.bfloat16),
+            nn.Conv2d(reduce_5x5, out_5x5, kernel_size=5, padding=2, dtype=torch.bfloat16)
         )
         
         # Max pooling branch
         self.branch_pool = nn.Sequential(
             nn.MaxPool2d(kernel_size=3, stride=1, padding=1),
-            nn.Conv2d(in_channels, pool_proj, kernel_size=1)
+            nn.Conv2d(in_channels, pool_proj, kernel_size=1, dtype=torch.bfloat16)
         )
     
     def forward(self, x):
@@ -62,7 +62,7 @@ height = 224
 width = 224
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [in_channels, out_1x1, reduce_3x3, out_3x3, reduce_5x5, out_5x5, pool_proj]

@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, input_size, hidden_size, num_groups, eps=1e-5, negative_slope=0.01):
         super(Model, self).__init__()
-        self.fc = nn.Linear(input_size, hidden_size)
-        self.gn = nn.GroupNorm(num_groups=num_groups, num_channels=hidden_size, eps=eps)
+        self.fc = nn.Linear(input_size, hidden_size, dtype=torch.bfloat16)
+        self.gn = nn.GroupNorm(num_groups=num_groups, num_channels=hidden_size, eps=eps, dtype=torch.bfloat16)
         self.leaky_relu = nn.LeakyReLU(negative_slope=negative_slope)
 
     def forward(self, x):
@@ -34,7 +34,7 @@ hidden_size = 8192
 num_groups = 512
 
 def get_inputs():
-    return [torch.rand(batch_size, input_size)]
+    return [torch.rand(batch_size, input_size, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [input_size, hidden_size, num_groups]

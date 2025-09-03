@@ -20,7 +20,7 @@ dim = 1
 
 def get_inputs():
     scale = torch.rand(())
-    return [torch.rand(batch_size, *input_shape)*scale, torch.rand(batch_size, *input_shape)]
+    return [torch.rand(batch_size, *input_shape, dtype=torch.bfloat16)*scale, torch.rand(batch_size, *input_shape, dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return []

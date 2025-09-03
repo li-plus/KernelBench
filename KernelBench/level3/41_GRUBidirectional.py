@@ -13,8 +13,8 @@ class Model(nn.Module):
         """
         super(Model, self).__init__()
         
-        self.gru = nn.GRU(input_size, hidden_size, num_layers, bias, batch_first, dropout=0, bidirectional=True)
-        self.h0 = torch.randn((num_layers * 2, batch_size, hidden_size))
+        self.gru = nn.GRU(input_size, hidden_size, num_layers, bias, batch_first, dropout=0, bidirectional=True, dtype=torch.bfloat16)
+        self.h0 = torch.randn((num_layers * 2, batch_size, hidden_size), dtype=torch.bfloat16)
     
     def forward(self, x,h0):
         """
@@ -35,7 +35,7 @@ hidden_size = 256
 num_layers = 6
 
 def get_inputs():
-    return [torch.rand(seq_len, batch_size, input_size),torch.rand((num_layers*2, batch_size, hidden_size))]
+    return [torch.rand(seq_len, batch_size, input_size, dtype=torch.bfloat16),torch.rand((num_layers*2, batch_size, hidden_size), dtype=torch.bfloat16)]
 
 def get_init_inputs():
     return [input_size, hidden_size, num_layers]

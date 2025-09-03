@@ -13,7 +13,7 @@ class Model(nn.Module):
             normalized_shape (tuple): Shape of the input tensor to be normalized.
         """
         super(Model, self).__init__()
-        self.ln = nn.LayerNorm(normalized_shape=normalized_shape)
+        self.ln = nn.LayerNorm(normalized_shape=normalized_shape, dtype=torch.bfloat16)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -33,7 +33,7 @@ dim1 = 256
 dim2 = 256
 
 def get_inputs():
-    x = torch.rand(batch_size, features, dim1, dim2)
+    x = torch.rand(batch_size, features, dim1, dim2, dtype=torch.bfloat16)
     return [x]
 
 def get_init_inputs():

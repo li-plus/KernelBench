@@ -7,7 +7,7 @@ class Model(torch.nn.Module):
         super().__init__()
         self.model_name = model_name
         self.config = config
-        self.model = AutoModelForCausalLM.from_pretrained(self.model_name, config=self.config)
+        self.model = AutoModelForCausalLM.from_pretrained(self.model_name, config=self.config, dtype=torch.bfloat16)
 
     def forward(self, x):
         return self.model(x).logits

@@ -186,4 +186,4 @@ dataset_dict = DatasetDict({
     "level_4": hf_level_4
 })
 
-dataset_dict.push_to_hub("ScalingIntelligence/KernelBench")
+dataset_dict.push_to_hub("li-plus/KernelBench-bf16")

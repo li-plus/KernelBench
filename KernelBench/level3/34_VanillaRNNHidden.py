@@ -16,8 +16,8 @@ class Model(nn.Module):
         self.output_size = output_size
 
         # Define the RNN cell components (input to hidden, hidden to hidden, and hidden to output)
-        self.i2h = nn.Linear(input_size + hidden_size, hidden_size, dtype=torch.bfloat16)  # Input to hidden
-        self.h2o = nn.Linear(hidden_size, output_size, dtype=torch.bfloat16)  # Hidden to output
+        self.i2h = nn.Linear(input_size + hidden_size, hidden_size, dtype=torch.half)  # Input to hidden
+        self.h2o = nn.Linear(hidden_size, output_size, dtype=torch.half)  # Hidden to output
         self.tanh = nn.Tanh()  # Activation function for hidden state
 
     def forward(self, x: torch.Tensor, h0: torch.Tensor) -> torch.Tensor:
@@ -49,8 +49,8 @@ sequence_length = 256
 
 def get_inputs():
     return [
-        torch.rand(sequence_length, batch_size, input_size, dtype=torch.bfloat16),
-        torch.rand(batch_size, hidden_size, dtype=torch.bfloat16)
+        torch.rand(sequence_length, batch_size, input_size, dtype=torch.half),
+        torch.rand(batch_size, hidden_size, dtype=torch.half)
     ]
 
 def get_init_inputs():

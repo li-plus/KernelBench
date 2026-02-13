@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, subtract_value, multiply_value):
         super(Model, self).__init__()
-        self.linear = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
+        self.linear = nn.Linear(in_features, out_features, dtype=torch.half)
         self.subtract_value = subtract_value
         self.multiply_value = multiply_value
 
@@ -25,7 +25,7 @@ subtract_value = 2.0
 multiply_value = 1.5
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, subtract_value, multiply_value]

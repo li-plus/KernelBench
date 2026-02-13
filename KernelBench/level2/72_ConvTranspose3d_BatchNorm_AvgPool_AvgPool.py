@@ -8,8 +8,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, bias_shape):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dtype=torch.bfloat16)
-        self.batch_norm = nn.BatchNorm3d(out_channels, dtype=torch.bfloat16)
+        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dtype=torch.half)
+        self.batch_norm = nn.BatchNorm3d(out_channels, dtype=torch.half)
         self.avg_pool1 = nn.AvgPool3d(kernel_size=2)
         self.avg_pool2 = nn.AvgPool3d(kernel_size=2)
 
@@ -31,7 +31,7 @@ padding = 1
 bias_shape = (out_channels, 1, 1, 1)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding, bias_shape]

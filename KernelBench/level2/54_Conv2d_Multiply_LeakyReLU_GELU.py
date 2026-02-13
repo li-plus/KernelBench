@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, multiplier_shape):
         super(Model, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
-        self.multiplier = nn.Parameter(torch.randn(multiplier_shape, dtype=torch.bfloat16)) 
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.half)
+        self.multiplier = nn.Parameter(torch.randn(multiplier_shape, dtype=torch.half)) 
         self.leaky_relu = nn.LeakyReLU()
 
     def forward(self, x):
@@ -26,7 +26,7 @@ kernel_size = 3
 multiplier_shape = (out_channels, 1, 1)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, multiplier_shape]

@@ -7,9 +7,9 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, scaling_factor, bias_shape):
         super(Model, self).__init__()
-        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
-        self.scaling_factor = nn.Parameter(torch.randn(bias_shape, dtype=torch.bfloat16))
-        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.bfloat16)) 
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.half)
+        self.scaling_factor = nn.Parameter(torch.randn(bias_shape, dtype=torch.half))
+        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.half)) 
 
     def forward(self, x):
         x = self.conv(x)
@@ -28,7 +28,7 @@ scaling_factor = 2
 bias_shape = (out_channels, 1, 1, 1)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, scaling_factor, bias_shape]

@@ -30,8 +30,8 @@ def get_inputs():
     Returns:
         list: A list containing two upper triangular matrices of shape (N, N).
     """
-    A = torch.triu(torch.rand(N, N, dtype=torch.bfloat16))
-    B = torch.triu(torch.rand(N, N, dtype=torch.bfloat16))
+    A = torch.triu(torch.rand(N, N, dtype=torch.half))
+    B = torch.triu(torch.rand(N, N, dtype=torch.half))
     return [A, B]
 
 def get_init_inputs():

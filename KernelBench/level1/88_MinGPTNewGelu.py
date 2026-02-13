@@ -20,7 +20,7 @@ batch_size = 8192
 dim = 8192
 
 def get_inputs():
-    return [torch.rand(batch_size, dim, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, dim, dtype=torch.half)]
 
 def get_init_inputs():
     return []

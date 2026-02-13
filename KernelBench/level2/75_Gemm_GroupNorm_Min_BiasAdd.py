@@ -7,9 +7,9 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, num_groups, bias_shape):
         super(Model, self).__init__()
-        self.gemm = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
-        self.group_norm = nn.GroupNorm(num_groups, out_features, dtype=torch.bfloat16)
-        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.bfloat16))
+        self.gemm = nn.Linear(in_features, out_features, dtype=torch.half)
+        self.group_norm = nn.GroupNorm(num_groups, out_features, dtype=torch.half)
+        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.half))
 
     def forward(self, x):
         x = self.gemm(x)
@@ -25,7 +25,7 @@ num_groups = 512
 bias_shape = (1, out_features, 1, 1)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, num_groups, bias_shape]

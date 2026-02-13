@@ -25,9 +25,9 @@ class Mlp(nn.Module):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
-        self.fc1 = nn.Linear(in_features, hidden_features, dtype=torch.bfloat16)
+        self.fc1 = nn.Linear(in_features, hidden_features, dtype=torch.half)
         self.act = act_layer()
-        self.fc2 = nn.Linear(hidden_features, out_features, dtype=torch.bfloat16)
+        self.fc2 = nn.Linear(hidden_features, out_features, dtype=torch.half)
         self.drop = nn.Dropout(drop)
 
     def forward(self, x):
@@ -94,12 +94,12 @@ class WindowAttention(nn.Module):
         self.pretrained_window_size = pretrained_window_size
         self.num_heads = num_heads
 
-        self.logit_scale = nn.Parameter(torch.log(10 * torch.ones((num_heads, 1, 1), dtype=torch.bfloat16)), requires_grad=True)
+        self.logit_scale = nn.Parameter(torch.log(10 * torch.ones((num_heads, 1, 1), dtype=torch.half)), requires_grad=True)
 
         # mlp to generate continuous relative position bias
-        self.cpb_mlp = nn.Sequential(nn.Linear(2, 512, bias=True, dtype=torch.bfloat16),
+        self.cpb_mlp = nn.Sequential(nn.Linear(2, 512, bias=True, dtype=torch.half),
                                      nn.ReLU(inplace=True),
-                                     nn.Linear(512, num_heads, bias=False, dtype=torch.bfloat16))
+                                     nn.Linear(512, num_heads, bias=False, dtype=torch.half))
 
         # get relative_coords_table
         relative_coords_h = torch.arange(-(self.window_size[0] - 1), self.window_size[0], dtype=torch.float32)
@@ -117,7 +117,7 @@ class WindowAttention(nn.Module):
         relative_coords_table = torch.sign(relative_coords_table) * torch.log2(
             torch.abs(relative_coords_table) + 1.0) / np.log2(8)
 
-        self.register_buffer("relative_coords_table", relative_coords_table.bfloat16())
+        self.register_buffer("relative_coords_table", relative_coords_table.half())
 
         # get pair-wise relative position index for each token inside the window
         coords_h = torch.arange(self.window_size[0])
@@ -132,15 +132,15 @@ class WindowAttention(nn.Module):
         relative_position_index = relative_coords.sum(-1)  # Wh*Ww, Wh*Ww
         self.register_buffer("relative_position_index", relative_position_index)
 
-        self.qkv = nn.Linear(dim, dim * 3, bias=False, dtype=torch.bfloat16)
+        self.qkv = nn.Linear(dim, dim * 3, bias=False, dtype=torch.half)
         if qkv_bias:
-            self.q_bias = nn.Parameter(torch.zeros(dim, dtype=torch.bfloat16))
-            self.v_bias = nn.Parameter(torch.zeros(dim, dtype=torch.bfloat16))
+            self.q_bias = nn.Parameter(torch.zeros(dim, dtype=torch.half))
+            self.v_bias = nn.Parameter(torch.zeros(dim, dtype=torch.half))
         else:
             self.q_bias = None
             self.v_bias = None
         self.attn_drop = nn.Dropout(attn_drop)
-        self.proj = nn.Linear(dim, dim, dtype=torch.bfloat16)
+        self.proj = nn.Linear(dim, dim, dtype=torch.half)
         self.proj_drop = nn.Dropout(proj_drop)
         self.softmax = nn.Softmax(dim=-1)
 
@@ -220,21 +220,21 @@ class SwinTransformerBlock(nn.Module):
             self.window_size = min(self.input_resolution)
         assert 0 <= self.shift_size < self.window_size, "shift_size must in 0-window_size"
 
-        self.norm1 = norm_layer(dim, dtype=torch.bfloat16)
+        self.norm1 = norm_layer(dim, dtype=torch.half)
         self.attn = WindowAttention(
             dim, window_size=to_2tuple(self.window_size), num_heads=num_heads,
             qkv_bias=qkv_bias, attn_drop=attn_drop, proj_drop=drop,
             pretrained_window_size=to_2tuple(pretrained_window_size))
 
         self.drop_path = nn.Identity()
-        self.norm2 = norm_layer(dim, dtype=torch.bfloat16)
+        self.norm2 = norm_layer(dim, dtype=torch.half)
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
         if self.shift_size > 0:
             # calculate attention mask for SW-MSA
             H, W = self.input_resolution
-            img_mask = torch.zeros((1, H, W, 1), dtype=torch.bfloat16)  # 1 H W 1
+            img_mask = torch.zeros((1, H, W, 1), dtype=torch.half)  # 1 H W 1
             h_slices = (slice(0, -self.window_size),
                         slice(-self.window_size, -self.shift_size),
                         slice(-self.shift_size, None))
@@ -308,8 +308,8 @@ class PatchMerging(nn.Module):
         super().__init__()
         self.input_resolution = input_resolution
         self.dim = dim
-        self.reduction = nn.Linear(4 * dim, 2 * dim, bias=False, dtype=torch.bfloat16)
-        self.norm = norm_layer(2 * dim, dtype=torch.bfloat16)
+        self.reduction = nn.Linear(4 * dim, 2 * dim, bias=False, dtype=torch.half)
+        self.norm = norm_layer(2 * dim, dtype=torch.half)
 
     def forward(self, x):
         """
@@ -419,9 +419,9 @@ class PatchEmbed(nn.Module):
         self.in_chans = in_chans
         self.embed_dim = embed_dim
 
-        self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size, dtype=torch.bfloat16)
+        self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size, dtype=torch.half)
         if norm_layer is not None:
-            self.norm = norm_layer(embed_dim, dtype=torch.bfloat16)
+            self.norm = norm_layer(embed_dim, dtype=torch.half)
         else:
             self.norm = None
 
@@ -508,9 +508,9 @@ class Model(nn.Module):
                                pretrained_window_size=pretrained_window_sizes[i_layer])
             self.layers.append(layer)
 
-        self.norm = norm_layer(self.num_features, dtype=torch.bfloat16)
+        self.norm = norm_layer(self.num_features, dtype=torch.half)
         self.avgpool = nn.AdaptiveAvgPool1d(1)
-        self.head = nn.Linear(self.num_features, num_classes, dtype=torch.bfloat16) if num_classes > 0 else nn.Identity()
+        self.head = nn.Linear(self.num_features, num_classes, dtype=torch.half) if num_classes > 0 else nn.Identity()
 
     def forward_features(self, x):
         x = self.patch_embed(x)
@@ -533,7 +533,7 @@ batch_size = 10
 image_size = 224
 
 def get_inputs():
-    return [torch.rand(batch_size, 3, image_size, image_size, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, 3, image_size, image_size, dtype=torch.half)]
 
 def get_init_inputs():
     return []

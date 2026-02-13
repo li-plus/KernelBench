@@ -12,13 +12,13 @@ class FireModule(nn.Module):
         """
         super(FireModule, self).__init__()
         
-        self.squeeze = nn.Conv2d(in_channels, squeeze_channels, kernel_size=1, dtype=torch.bfloat16)
+        self.squeeze = nn.Conv2d(in_channels, squeeze_channels, kernel_size=1, dtype=torch.half)
         self.squeeze_activation = nn.ReLU(inplace=True)
         
-        self.expand1x1 = nn.Conv2d(squeeze_channels, expand1x1_channels, kernel_size=1, dtype=torch.bfloat16)
+        self.expand1x1 = nn.Conv2d(squeeze_channels, expand1x1_channels, kernel_size=1, dtype=torch.half)
         self.expand1x1_activation = nn.ReLU(inplace=True)
         
-        self.expand3x3 = nn.Conv2d(squeeze_channels, expand3x3_channels, kernel_size=3, padding=1, dtype=torch.bfloat16)
+        self.expand3x3 = nn.Conv2d(squeeze_channels, expand3x3_channels, kernel_size=3, padding=1, dtype=torch.half)
         self.expand3x3_activation = nn.ReLU(inplace=True)
     
     def forward(self, x):
@@ -40,7 +40,7 @@ class Model(nn.Module):
         super(Model, self).__init__()
         
         self.features = nn.Sequential(
-            nn.Conv2d(3, 96, kernel_size=7, stride=2, dtype=torch.bfloat16),
+            nn.Conv2d(3, 96, kernel_size=7, stride=2, dtype=torch.half),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2, ceil_mode=True),
             FireModule(96, 16, 64, 64),
@@ -57,7 +57,7 @@ class Model(nn.Module):
         
         self.classifier = nn.Sequential(
             nn.Dropout(p=0.0),
-            nn.Conv2d(512, num_classes, kernel_size=1, dtype=torch.bfloat16),
+            nn.Conv2d(512, num_classes, kernel_size=1, dtype=torch.half),
             nn.ReLU(inplace=True),
             nn.AdaptiveAvgPool2d((1, 1))
         )
@@ -79,7 +79,7 @@ width = 512
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, input_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, input_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_classes]

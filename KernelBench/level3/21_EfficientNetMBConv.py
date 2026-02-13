@@ -20,20 +20,20 @@ class Model(nn.Module):
         
         if expand_ratio != 1:
             self.expand_conv = nn.Sequential(
-                nn.Conv2d(in_channels, hidden_dim, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16),
-                nn.BatchNorm2d(hidden_dim, dtype=torch.bfloat16),
+                nn.Conv2d(in_channels, hidden_dim, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half),
+                nn.BatchNorm2d(hidden_dim, dtype=torch.half),
                 nn.ReLU6(inplace=True)
             )
         
         self.depthwise_conv = nn.Sequential(
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=kernel_size, stride=stride, padding=(kernel_size-1)//2, groups=hidden_dim, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(hidden_dim, dtype=torch.bfloat16),
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=kernel_size, stride=stride, padding=(kernel_size-1)//2, groups=hidden_dim, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(hidden_dim, dtype=torch.half),
             nn.ReLU6(inplace=True)
         )
         
         self.project_conv = nn.Sequential(
-            nn.Conv2d(hidden_dim, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+            nn.Conv2d(hidden_dim, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(out_channels, dtype=torch.half)
         )
     
     def forward(self, x):
@@ -65,7 +65,7 @@ stride = 2
 expand_ratio = 6
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, 224, 224, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, 224, 224, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, expand_ratio]

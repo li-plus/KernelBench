@@ -14,8 +14,8 @@ class Model(nn.Module):
         """
         super(Model, self).__init__()
         # Initialize hidden state with random values
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, dropout=dropout, bidirectional=False, dtype=torch.bfloat16)
-        self.fc = nn.Linear(hidden_size, output_size, dtype=torch.bfloat16)
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True, dropout=dropout, bidirectional=False, dtype=torch.half)
+        self.fc = nn.Linear(hidden_size, output_size, dtype=torch.half)
     
     def forward(self, x,h0,c0):
         """
@@ -43,7 +43,7 @@ output_size = 10
 dropout = 0.0
 
 def get_inputs():
-    return [torch.rand(batch_size, sequence_length, input_size, dtype=torch.bfloat16),torch.rand((num_layers, batch_size, hidden_size), dtype=torch.bfloat16),torch.rand((num_layers, batch_size, hidden_size), dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, sequence_length, input_size, dtype=torch.half),torch.rand((num_layers, batch_size, hidden_size), dtype=torch.half),torch.rand((num_layers, batch_size, hidden_size), dtype=torch.half)]
 
 def get_init_inputs():
     return [input_size, hidden_size, num_layers, output_size, dropout]

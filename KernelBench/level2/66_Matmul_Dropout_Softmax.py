@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, dropout_p):
         super(Model, self).__init__()
-        self.matmul = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
+        self.matmul = nn.Linear(in_features, out_features, dtype=torch.half)
         self.dropout = nn.Dropout(dropout_p)
 
     def forward(self, x):
@@ -29,7 +29,7 @@ out_features = 16384
 dropout_p = 0.2
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, dropout_p]

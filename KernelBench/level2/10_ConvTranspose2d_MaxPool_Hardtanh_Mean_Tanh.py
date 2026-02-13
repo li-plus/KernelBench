@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, maxpool_kernel_size, maxpool_stride, hardtanh_min, hardtanh_max):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dtype=torch.bfloat16)
+        self.conv_transpose = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dtype=torch.half)
         self.maxpool = nn.MaxPool2d(kernel_size=maxpool_kernel_size, stride=maxpool_stride)
         self.hardtanh = nn.Hardtanh(min_val=hardtanh_min, max_val=hardtanh_max)
 
@@ -32,7 +32,7 @@ hardtanh_min = -1
 hardtanh_max = 1
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding, maxpool_kernel_size, maxpool_stride, hardtanh_min, hardtanh_max]

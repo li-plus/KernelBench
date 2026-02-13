@@ -8,8 +8,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, groups, eps, bias=True):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias, dtype=torch.bfloat16)
-        self.group_norm = nn.GroupNorm(num_groups=groups, num_channels=out_channels, eps=eps, dtype=torch.bfloat16)
+        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, bias=bias, dtype=torch.half)
+        self.group_norm = nn.GroupNorm(num_groups=groups, num_channels=out_channels, eps=eps, dtype=torch.half)
 
     def forward(self, x):
         x = self.conv_transpose(x)
@@ -29,7 +29,7 @@ groups = 4
 eps = 1e-5
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding, groups, eps]

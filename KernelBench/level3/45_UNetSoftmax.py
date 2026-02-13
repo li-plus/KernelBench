@@ -6,11 +6,11 @@ class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.double_conv = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, dtype=torch.bfloat16),
-            nn.BatchNorm2d(out_channels, dtype=torch.bfloat16),
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, dtype=torch.half),
+            nn.BatchNorm2d(out_channels, dtype=torch.half),
             nn.Softmax(dim=-1),
-            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, dtype=torch.bfloat16),
-            nn.BatchNorm2d(out_channels, dtype=torch.bfloat16),
+            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, dtype=torch.half),
+            nn.BatchNorm2d(out_channels, dtype=torch.half),
             nn.Softmax(dim=-1)
         )
 
@@ -36,16 +36,16 @@ class Model(nn.Module):
 
         self.bottleneck = DoubleConv(features * 8, features * 16)
 
-        self.upconv4 = nn.ConvTranspose2d(features * 16, features * 8, kernel_size=2, stride=2, dtype=torch.bfloat16)
+        self.upconv4 = nn.ConvTranspose2d(features * 16, features * 8, kernel_size=2, stride=2, dtype=torch.half)
         self.decoder4 = DoubleConv(features * 16, features * 8)
-        self.upconv3 = nn.ConvTranspose2d(features * 8, features * 4, kernel_size=2, stride=2, dtype=torch.bfloat16)
+        self.upconv3 = nn.ConvTranspose2d(features * 8, features * 4, kernel_size=2, stride=2, dtype=torch.half)
         self.decoder3 = DoubleConv(features * 8, features * 4)
-        self.upconv2 = nn.ConvTranspose2d(features * 4, features * 2, kernel_size=2, stride=2, dtype=torch.bfloat16)
+        self.upconv2 = nn.ConvTranspose2d(features * 4, features * 2, kernel_size=2, stride=2, dtype=torch.half)
         self.decoder2 = DoubleConv(features * 4, features * 2)
-        self.upconv1 = nn.ConvTranspose2d(features * 2, features, kernel_size=2, stride=2, dtype=torch.bfloat16)
+        self.upconv1 = nn.ConvTranspose2d(features * 2, features, kernel_size=2, stride=2, dtype=torch.half)
         self.decoder1 = DoubleConv(features * 2, features)
 
-        self.final_conv = nn.Conv2d(features, out_channels, kernel_size=1, dtype=torch.bfloat16)
+        self.final_conv = nn.Conv2d(features, out_channels, kernel_size=1, dtype=torch.half)
 
     def forward(self, x):
         """
@@ -82,7 +82,7 @@ width = 512
 features = 64
 # Test code for UNet
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, features]

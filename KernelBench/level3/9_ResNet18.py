@@ -13,11 +13,11 @@ class BasicBlock(nn.Module):
         :param downsample: Downsample layer for the shortcut connection
         """
         super(BasicBlock, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False, dtype=torch.bfloat16)
-        self.bn1 = nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False, dtype=torch.half)
+        self.bn1 = nn.BatchNorm2d(out_channels, dtype=torch.half)
         self.relu = nn.ReLU(inplace=True)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False, dtype=torch.bfloat16)
-        self.bn2 = nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False, dtype=torch.half)
+        self.bn2 = nn.BatchNorm2d(out_channels, dtype=torch.half)
         self.downsample = downsample
         self.stride = stride
 
@@ -51,8 +51,8 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.in_channels = 64
 
-        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False, dtype=torch.bfloat16)
-        self.bn1 = nn.BatchNorm2d(64, dtype=torch.bfloat16)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False, dtype=torch.half)
+        self.bn1 = nn.BatchNorm2d(64, dtype=torch.half)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
@@ -62,14 +62,14 @@ class Model(nn.Module):
         self.layer4 = self._make_layer(BasicBlock, 512, 2, stride=2)
 
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.fc = nn.Linear(512 * BasicBlock.expansion, num_classes, dtype=torch.bfloat16)
+        self.fc = nn.Linear(512 * BasicBlock.expansion, num_classes, dtype=torch.half)
 
     def _make_layer(self, block, out_channels, blocks, stride=1):
         downsample = None
         if stride != 1 or self.in_channels != out_channels * block.expansion:
             downsample = nn.Sequential(
-                nn.Conv2d(self.in_channels, out_channels * block.expansion, kernel_size=1, stride=stride, bias=False, dtype=torch.bfloat16),
-                nn.BatchNorm2d(out_channels * block.expansion, dtype=torch.bfloat16),
+                nn.Conv2d(self.in_channels, out_channels * block.expansion, kernel_size=1, stride=stride, bias=False, dtype=torch.half),
+                nn.BatchNorm2d(out_channels * block.expansion, dtype=torch.half),
             )
 
         layers = []
@@ -107,7 +107,7 @@ num_classes = 1000
 input_shape = (batch_size, 3, 224, 224)
 
 def get_inputs():
-    return [torch.rand(input_shape, dtype=torch.bfloat16)]
+    return [torch.rand(input_shape, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_classes]

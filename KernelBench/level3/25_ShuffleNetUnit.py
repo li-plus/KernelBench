@@ -18,16 +18,16 @@ class Model(nn.Module):
         mid_channels = out_channels // 4
         
         # First 1x1 group convolution
-        self.conv1 = nn.Conv2d(in_channels, mid_channels, kernel_size=1, stride=1, padding=0, groups=groups, bias=False, dtype=torch.bfloat16)
-        self.bn1 = nn.BatchNorm2d(mid_channels, dtype=torch.bfloat16)
+        self.conv1 = nn.Conv2d(in_channels, mid_channels, kernel_size=1, stride=1, padding=0, groups=groups, bias=False, dtype=torch.half)
+        self.bn1 = nn.BatchNorm2d(mid_channels, dtype=torch.half)
         
         # Depthwise 3x3 convolution
-        self.conv2 = nn.Conv2d(mid_channels, mid_channels, kernel_size=3, stride=1, padding=1, groups=mid_channels, bias=False, dtype=torch.bfloat16)
-        self.bn2 = nn.BatchNorm2d(mid_channels, dtype=torch.bfloat16)
+        self.conv2 = nn.Conv2d(mid_channels, mid_channels, kernel_size=3, stride=1, padding=1, groups=mid_channels, bias=False, dtype=torch.half)
+        self.bn2 = nn.BatchNorm2d(mid_channels, dtype=torch.half)
         
         # Second 1x1 group convolution
-        self.conv3 = nn.Conv2d(mid_channels, out_channels, kernel_size=1, stride=1, padding=0, groups=groups, bias=False, dtype=torch.bfloat16)
-        self.bn3 = nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+        self.conv3 = nn.Conv2d(mid_channels, out_channels, kernel_size=1, stride=1, padding=0, groups=groups, bias=False, dtype=torch.half)
+        self.bn3 = nn.BatchNorm2d(out_channels, dtype=torch.half)
         
         # Shuffle operation
         self.shuffle = ChannelShuffle(groups)
@@ -37,8 +37,8 @@ class Model(nn.Module):
             self.shortcut = nn.Sequential()
         else:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16),
-                nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half),
+                nn.BatchNorm2d(out_channels, dtype=torch.half)
             )
     
     def forward(self, x):
@@ -96,7 +96,7 @@ width = 224
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, input_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, input_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [input_channels, out_channels, groups]

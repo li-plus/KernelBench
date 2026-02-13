@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, num_groups, hardtanh_min, hardtanh_max):
         super(Model, self).__init__()
-        self.gemm = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
-        self.group_norm = nn.GroupNorm(num_groups, out_features, dtype=torch.bfloat16)
+        self.gemm = nn.Linear(in_features, out_features, dtype=torch.half)
+        self.group_norm = nn.GroupNorm(num_groups, out_features, dtype=torch.half)
         self.hardtanh = nn.Hardtanh(min_val=hardtanh_min, max_val=hardtanh_max)
 
     def forward(self, x):
@@ -31,7 +31,7 @@ hardtanh_min = -2.0
 hardtanh_max = 2.0
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, num_groups, hardtanh_min, hardtanh_max]

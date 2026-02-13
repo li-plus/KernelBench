@@ -27,8 +27,8 @@ K = 2048
 L = 768
 
 def get_inputs():
-    A = torch.rand(N, M, K, dtype=torch.bfloat16)
-    B = torch.rand(K, L, dtype=torch.bfloat16)
+    A = torch.rand(N, M, K, dtype=torch.half)
+    B = torch.rand(K, L, dtype=torch.half)
     return [A, B]
 
 def get_init_inputs():

@@ -7,10 +7,10 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, num_groups, bias_shape, scale_shape):
         super(Model, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
-        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.bfloat16))
-        self.scale = nn.Parameter(torch.randn(scale_shape, dtype=torch.bfloat16))
-        self.group_norm = nn.GroupNorm(num_groups, out_channels, dtype=torch.bfloat16)
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.half)
+        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.half))
+        self.scale = nn.Parameter(torch.randn(scale_shape, dtype=torch.half))
+        self.group_norm = nn.GroupNorm(num_groups, out_channels, dtype=torch.half)
 
     def forward(self, x):
         x = self.conv(x)
@@ -30,7 +30,7 @@ bias_shape = (out_channels, 1, 1)
 scale_shape = (out_channels, 1, 1)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, num_groups, bias_shape, scale_shape]

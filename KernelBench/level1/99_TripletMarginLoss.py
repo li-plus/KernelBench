@@ -21,7 +21,7 @@ dim = 1
 
 def get_inputs():
     scale = torch.rand(())
-    return [torch.rand(batch_size, *input_shape, dtype=torch.bfloat16)*scale, torch.rand(batch_size, *input_shape, dtype=torch.bfloat16), torch.rand(batch_size, *input_shape, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, *input_shape, dtype=torch.half)*scale, torch.rand(batch_size, *input_shape, dtype=torch.half), torch.rand(batch_size, *input_shape, dtype=torch.half)]
     
 def get_init_inputs():
     return [1.0]  # Default margin

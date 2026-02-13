@@ -15,19 +15,19 @@ class Model(nn.Module):
         
         def conv_bn(inp, oup, stride):
             return nn.Sequential(
-                nn.Conv2d(inp, oup, 3, stride, 1, bias=False, dtype=torch.bfloat16),
-                nn.BatchNorm2d(oup, dtype=torch.bfloat16),
+                nn.Conv2d(inp, oup, 3, stride, 1, bias=False, dtype=torch.half),
+                nn.BatchNorm2d(oup, dtype=torch.half),
                 nn.ReLU(inplace=True)
             )
         
         def conv_dw(inp, oup, stride):
             return nn.Sequential(
-                nn.Conv2d(inp, inp, 3, stride, 1, groups=inp, bias=False, dtype=torch.bfloat16),
-                nn.BatchNorm2d(inp, dtype=torch.bfloat16),
+                nn.Conv2d(inp, inp, 3, stride, 1, groups=inp, bias=False, dtype=torch.half),
+                nn.BatchNorm2d(inp, dtype=torch.half),
                 nn.ReLU(inplace=True),
                 
-                nn.Conv2d(inp, oup, 1, 1, 0, bias=False, dtype=torch.bfloat16),
-                nn.BatchNorm2d(oup, dtype=torch.bfloat16),
+                nn.Conv2d(inp, oup, 1, 1, 0, bias=False, dtype=torch.half),
+                nn.BatchNorm2d(oup, dtype=torch.half),
                 nn.ReLU(inplace=True),
             )
         
@@ -48,7 +48,7 @@ class Model(nn.Module):
             conv_dw(int(1024 * alpha), int(1024 * alpha), 1),
             nn.AvgPool2d(7),
         )
-        self.fc = nn.Linear(int(1024 * alpha), num_classes, dtype=torch.bfloat16)
+        self.fc = nn.Linear(int(1024 * alpha), num_classes, dtype=torch.half)
     
     def forward(self, x):
         """
@@ -69,7 +69,7 @@ num_classes = 1000
 alpha = 1.0
 
 def get_inputs():
-    return [torch.rand(batch_size, input_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, input_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_classes, input_channels, alpha]

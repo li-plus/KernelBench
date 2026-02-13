@@ -20,9 +20,9 @@ class Model(nn.Module):
         Creates a single layer with BatchNorm, ReLU, Conv2D, and Dropout.
         """
         return nn.Sequential(
-            nn.BatchNorm2d(in_features, dtype=torch.bfloat16),
+            nn.BatchNorm2d(in_features, dtype=torch.half),
             nn.ReLU(inplace=True),
-            nn.Conv2d(in_features, growth_rate, kernel_size=3, padding=1, bias=False, dtype=torch.bfloat16),
+            nn.Conv2d(in_features, growth_rate, kernel_size=3, padding=1, bias=False, dtype=torch.half),
             nn.Dropout(0.0)
         )
     
@@ -45,7 +45,7 @@ growth_rate = 32
 height, width = 224, 224
 
 def get_inputs():
-    return [torch.rand(batch_size, num_input_features, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, num_input_features, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_layers, num_input_features , growth_rate]

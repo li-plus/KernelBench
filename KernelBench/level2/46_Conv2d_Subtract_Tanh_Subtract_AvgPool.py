@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, subtract1_value, subtract2_value, kernel_size_pool):
         super(Model, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.half)
         self.subtract1_value = subtract1_value
         self.subtract2_value = subtract2_value
         self.avgpool = nn.AvgPool2d(kernel_size_pool)
@@ -30,7 +30,7 @@ subtract2_value = 0.2
 kernel_size_pool = 2
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, subtract1_value, subtract2_value, kernel_size_pool]

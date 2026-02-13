@@ -20,9 +20,9 @@ class DenseBlock(nn.Module):
         Creates a single layer with BatchNorm, ReLU, Conv2D, and Dropout.
         """
         return nn.Sequential(
-            nn.BatchNorm2d(in_features, dtype=torch.bfloat16),
+            nn.BatchNorm2d(in_features, dtype=torch.half),
             nn.ReLU(inplace=True),
-            nn.Conv2d(in_features, growth_rate, kernel_size=3, padding=1, bias=False, dtype=torch.bfloat16),
+            nn.Conv2d(in_features, growth_rate, kernel_size=3, padding=1, bias=False, dtype=torch.half),
             nn.Dropout(0.0)
         )
 
@@ -46,9 +46,9 @@ class TransitionLayer(nn.Module):
         """
         super(TransitionLayer, self).__init__()
         self.transition = nn.Sequential(
-            nn.BatchNorm2d(num_input_features, dtype=torch.bfloat16),
+            nn.BatchNorm2d(num_input_features, dtype=torch.half),
             nn.ReLU(inplace=True),
-            nn.Conv2d(num_input_features, num_output_features, kernel_size=1, bias=False, dtype=torch.bfloat16),
+            nn.Conv2d(num_input_features, num_output_features, kernel_size=1, bias=False, dtype=torch.half),
             nn.AvgPool2d(kernel_size=2, stride=2)
         )
 
@@ -69,8 +69,8 @@ class Model(nn.Module):
 
         # Initial convolution and pooling
         self.features = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(64, dtype=torch.bfloat16),
+            nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(64, dtype=torch.half),
             nn.ReLU(inplace=True),
             nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         )
@@ -93,8 +93,8 @@ class Model(nn.Module):
                 num_features = num_features // 2
 
         # Final batch norm and classifier
-        self.final_bn = nn.BatchNorm2d(num_features, dtype=torch.bfloat16)
-        self.classifier = nn.Linear(num_features, num_classes, dtype=torch.bfloat16)
+        self.final_bn = nn.BatchNorm2d(num_features, dtype=torch.half)
+        self.classifier = nn.Linear(num_features, num_classes, dtype=torch.half)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -120,7 +120,7 @@ num_classes = 10
 height, width = 224, 224  # Standard input size for DenseNet
 
 def get_inputs():
-    return [torch.rand(batch_size, 3, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, 3, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [32, num_classes]

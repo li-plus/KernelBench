@@ -12,7 +12,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels: int, out_channels: int, bias: bool = False):
         super(Model, self).__init__()
-        self.conv1d = nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=bias, dtype=torch.bfloat16)
+        self.conv1d = nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=bias, dtype=torch.half)
         
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -34,7 +34,7 @@ width = 1024
 height = 1024
 
 def get_inputs():
-    x = torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)
+    x = torch.rand(batch_size, in_channels, height, width, dtype=torch.half)
     return [x]
 
 def get_init_inputs():

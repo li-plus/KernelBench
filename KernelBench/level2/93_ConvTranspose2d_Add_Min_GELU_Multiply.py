@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, add_value, multiply_value):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride, dtype=torch.bfloat16)
+        self.conv_transpose = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride, dtype=torch.half)
         self.add_value = add_value
         self.multiply_value = multiply_value
 
@@ -29,7 +29,7 @@ add_value = 0.5
 multiply_value = 2.0
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, add_value, multiply_value]

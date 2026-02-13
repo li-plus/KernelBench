@@ -13,14 +13,14 @@ class Model(nn.Module):
         :param downsample: Downsample layer for the shortcut connection
         """
         super(Model, self).__init__()
-        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False, dtype=torch.bfloat16)
-        self.bn1 = nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=stride, padding=1, bias=False, dtype=torch.half)
+        self.bn1 = nn.BatchNorm2d(out_channels, dtype=torch.half)
         self.relu = nn.ReLU(inplace=True)
-        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False, dtype=torch.bfloat16)
-        self.bn2 = nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False, dtype=torch.half)
+        self.bn2 = nn.BatchNorm2d(out_channels, dtype=torch.half)
         self.downsample = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels * self.expansion, kernel_size=1, stride=stride, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(out_channels * self.expansion, dtype=torch.bfloat16),
+            nn.Conv2d(in_channels, out_channels * self.expansion, kernel_size=1, stride=stride, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(out_channels * self.expansion, dtype=torch.half),
         )
         self.stride = stride
 
@@ -54,7 +54,7 @@ batch_size = 10
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, 224, 224, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, 224, 224, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, stride]

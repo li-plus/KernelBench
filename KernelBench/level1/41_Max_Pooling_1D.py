@@ -43,7 +43,7 @@ dilation    = 3
 return_indices = False
 
 def get_inputs():
-    x = torch.rand(batch_size, features, sequence_length, dtype=torch.bfloat16)
+    x = torch.rand(batch_size, features, sequence_length, dtype=torch.half)
     return [x]
 
 def get_init_inputs():

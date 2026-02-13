@@ -12,8 +12,8 @@ class Model(nn.Module):
         super(Model, self).__init__()
         
         # Initial convolutional layer
-        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False, dtype=torch.bfloat16)
-        self.bn1 = nn.BatchNorm2d(32, dtype=torch.bfloat16)
+        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False, dtype=torch.half)
+        self.bn1 = nn.BatchNorm2d(32, dtype=torch.half)
         
         # MBConv blocks
         self.blocks = nn.Sequential(
@@ -46,11 +46,11 @@ class Model(nn.Module):
         )
         
         # Final convolutional layer
-        self.conv2 = nn.Conv2d(320, 1280, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16)
-        self.bn2 = nn.BatchNorm2d(1280, dtype=torch.bfloat16)
+        self.conv2 = nn.Conv2d(320, 1280, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half)
+        self.bn2 = nn.BatchNorm2d(1280, dtype=torch.half)
         
         # Fully connected layer
-        self.fc = nn.Linear(1280, num_classes, dtype=torch.bfloat16)
+        self.fc = nn.Linear(1280, num_classes, dtype=torch.half)
     
     def forward(self, x):
         """
@@ -85,20 +85,20 @@ class MBConv(nn.Module):
         
         if expand_ratio != 1:
             self.expand_conv = nn.Sequential(
-                nn.Conv2d(in_channels, hidden_dim, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16),
-                nn.BatchNorm2d(hidden_dim, dtype=torch.bfloat16),
+                nn.Conv2d(in_channels, hidden_dim, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half),
+                nn.BatchNorm2d(hidden_dim, dtype=torch.half),
                 nn.ReLU6(inplace=True)
             )
         
         self.depthwise_conv = nn.Sequential(
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=kernel_size, stride=stride, padding=(kernel_size-1)//2, groups=hidden_dim, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(hidden_dim, dtype=torch.bfloat16),
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=kernel_size, stride=stride, padding=(kernel_size-1)//2, groups=hidden_dim, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(hidden_dim, dtype=torch.half),
             nn.ReLU6(inplace=True)
         )
         
         self.project_conv = nn.Sequential(
-            nn.Conv2d(hidden_dim, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+            nn.Conv2d(hidden_dim, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(out_channels, dtype=torch.half)
         )
     
     def forward(self, x):
@@ -126,7 +126,7 @@ batch_size = 10
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, 3, 224, 224, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, 3, 224, 224, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_classes]

@@ -12,8 +12,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, num_groups=4, bias=True):
         super(Model, self).__init__()
-        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, bias=bias, dtype=torch.bfloat16)
-        self.group_norm = nn.GroupNorm(num_groups, out_channels, dtype=torch.bfloat16)
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, bias=bias, dtype=torch.half)
+        self.group_norm = nn.GroupNorm(num_groups, out_channels, dtype=torch.half)
 
     def forward(self, x):
         x = self.conv(x)                             # (B, C, D, H, W)
@@ -30,7 +30,7 @@ depth, height, width = 16, 32, 32
 kernel_size = 4
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size]

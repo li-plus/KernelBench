@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, add_value_shape):
         super(Model, self).__init__()
-        self.matmul = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
-        self.add_value = nn.Parameter(torch.randn(add_value_shape, dtype=torch.bfloat16)) 
+        self.matmul = nn.Linear(in_features, out_features, dtype=torch.half)
+        self.add_value = nn.Parameter(torch.randn(add_value_shape, dtype=torch.half)) 
 
     def forward(self, x):
         x = self.matmul(x)
@@ -25,7 +25,7 @@ out_features = 8192
 add_value_shape = (out_features,)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, add_value_shape]

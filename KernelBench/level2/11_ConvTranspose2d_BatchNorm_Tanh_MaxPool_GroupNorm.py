@@ -7,11 +7,11 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, groups, num_groups):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dtype=torch.bfloat16)
-        self.batch_norm = nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+        self.conv_transpose = nn.ConvTranspose2d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, dtype=torch.half)
+        self.batch_norm = nn.BatchNorm2d(out_channels, dtype=torch.half)
         self.tanh = nn.Tanh()
         self.max_pool = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.group_norm = nn.GroupNorm(num_groups=num_groups, num_channels=out_channels, dtype=torch.bfloat16)
+        self.group_norm = nn.GroupNorm(num_groups=num_groups, num_channels=out_channels, dtype=torch.half)
 
     def forward(self, x):
         x = self.conv_transpose(x)
@@ -33,7 +33,7 @@ num_groups   = 8
 height, width = 32, 32
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding, groups, num_groups]

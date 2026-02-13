@@ -18,16 +18,16 @@ class ShuffleNetUnit(nn.Module):
         mid_channels = out_channels // 4
         
         # First 1x1 group convolution
-        self.conv1 = nn.Conv2d(in_channels, mid_channels, kernel_size=1, stride=1, padding=0, groups=groups, bias=False, dtype=torch.bfloat16)
-        self.bn1 = nn.BatchNorm2d(mid_channels, dtype=torch.bfloat16)
+        self.conv1 = nn.Conv2d(in_channels, mid_channels, kernel_size=1, stride=1, padding=0, groups=groups, bias=False, dtype=torch.half)
+        self.bn1 = nn.BatchNorm2d(mid_channels, dtype=torch.half)
         
         # Depthwise 3x3 convolution
-        self.conv2 = nn.Conv2d(mid_channels, mid_channels, kernel_size=3, stride=1, padding=1, groups=mid_channels, bias=False, dtype=torch.bfloat16)
-        self.bn2 = nn.BatchNorm2d(mid_channels, dtype=torch.bfloat16)
+        self.conv2 = nn.Conv2d(mid_channels, mid_channels, kernel_size=3, stride=1, padding=1, groups=mid_channels, bias=False, dtype=torch.half)
+        self.bn2 = nn.BatchNorm2d(mid_channels, dtype=torch.half)
         
         # Second 1x1 group convolution
-        self.conv3 = nn.Conv2d(mid_channels, out_channels, kernel_size=1, stride=1, padding=0, groups=groups, bias=False, dtype=torch.bfloat16)
-        self.bn3 = nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+        self.conv3 = nn.Conv2d(mid_channels, out_channels, kernel_size=1, stride=1, padding=0, groups=groups, bias=False, dtype=torch.half)
+        self.bn3 = nn.BatchNorm2d(out_channels, dtype=torch.half)
         
         # Shuffle operation
         self.shuffle = ChannelShuffle(groups)
@@ -37,8 +37,8 @@ class ShuffleNetUnit(nn.Module):
             self.shortcut = nn.Sequential()
         else:
             self.shortcut = nn.Sequential(
-                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16),
-                nn.BatchNorm2d(out_channels, dtype=torch.bfloat16)
+                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half),
+                nn.BatchNorm2d(out_channels, dtype=torch.half)
             )
     
     def forward(self, x):
@@ -99,18 +99,18 @@ class Model(nn.Module):
         """
         super(Model, self).__init__()
         
-        self.conv1 = nn.Conv2d(3, stages_out_channels[0], kernel_size=3, stride=2, padding=1, bias=False, dtype=torch.bfloat16)
-        self.bn1 = nn.BatchNorm2d(stages_out_channels[0], dtype=torch.bfloat16)
+        self.conv1 = nn.Conv2d(3, stages_out_channels[0], kernel_size=3, stride=2, padding=1, bias=False, dtype=torch.half)
+        self.bn1 = nn.BatchNorm2d(stages_out_channels[0], dtype=torch.half)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         
         self.stage2 = self._make_stage(stages_out_channels[0], stages_out_channels[1], stages_repeats[0], groups)
         self.stage3 = self._make_stage(stages_out_channels[1], stages_out_channels[2], stages_repeats[1], groups)
         self.stage4 = self._make_stage(stages_out_channels[2], stages_out_channels[3], stages_repeats[2], groups)
         
-        self.conv5 = nn.Conv2d(stages_out_channels[3], 1024, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16)
-        self.bn5 = nn.BatchNorm2d(1024, dtype=torch.bfloat16)
+        self.conv5 = nn.Conv2d(stages_out_channels[3], 1024, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half)
+        self.bn5 = nn.BatchNorm2d(1024, dtype=torch.half)
         
-        self.fc = nn.Linear(1024, num_classes, dtype=torch.bfloat16)
+        self.fc = nn.Linear(1024, num_classes, dtype=torch.half)
     
     def _make_stage(self, in_channels, out_channels, repeats, groups):
         """
@@ -157,7 +157,7 @@ width = 224
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, input_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, input_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_classes]

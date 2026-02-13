@@ -26,7 +26,7 @@ class Model(nn.Module):
         self.feature_extractor = nn.Sequential(*layers)
         
         # Final fully connected layer for classification
-        self.fc = nn.Linear(block_widths[-1], output_classes, dtype=torch.bfloat16)
+        self.fc = nn.Linear(block_widths[-1], output_classes, dtype=torch.half)
     
     def _make_stage(self, in_channels, out_channels):
         """
@@ -36,11 +36,11 @@ class Model(nn.Module):
         :return: nn.Sequential block with convolutional layers
         """
         return nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, dtype=torch.bfloat16),
-            nn.BatchNorm2d(out_channels, dtype=torch.bfloat16),
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, dtype=torch.half),
+            nn.BatchNorm2d(out_channels, dtype=torch.half),
             nn.ReLU(),
-            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, dtype=torch.bfloat16),
-            nn.BatchNorm2d(out_channels, dtype=torch.bfloat16),
+            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=1, dtype=torch.half),
+            nn.BatchNorm2d(out_channels, dtype=torch.half),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size=2, stride=2)
         )
@@ -66,7 +66,7 @@ output_classes = 10
 
 def get_inputs():
     """ Generates random input tensor of shape (batch_size, input_channels, height, width) """
-    return [torch.rand(batch_size, input_channels, image_height, image_width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, input_channels, image_height, image_width, dtype=torch.half)]
 
 def get_init_inputs():
     """ Initializes model parameters """

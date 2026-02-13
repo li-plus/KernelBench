@@ -8,7 +8,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, divisor, pool_size, bias_shape, sum_dim):
         super(Model, self).__init__()
-        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.half)
         self.divisor = divisor
         self.max_pool = nn.MaxPool3d(pool_size)
         self.global_avg_pool = nn.AdaptiveAvgPool3d((1, 1, 1))
@@ -35,7 +35,7 @@ bias_shape = (out_channels, 1, 1, 1)
 sum_dim = 1
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, divisor, pool_size, bias_shape, sum_dim]

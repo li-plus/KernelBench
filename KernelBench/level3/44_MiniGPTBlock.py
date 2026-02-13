@@ -27,9 +27,9 @@ class CausalSelfAttention(nn.Module):
         super().__init__()
         assert n_embd % n_head == 0
         # key, query, value projections for all heads, but in a batch
-        self.c_attn = nn.Linear(n_embd, 3 * n_embd, dtype=torch.bfloat16)
+        self.c_attn = nn.Linear(n_embd, 3 * n_embd, dtype=torch.half)
         # output projection
-        self.c_proj = nn.Linear(n_embd, n_embd, dtype=torch.bfloat16)
+        self.c_proj = nn.Linear(n_embd, n_embd, dtype=torch.half)
         # regularization
         self.attn_dropout = nn.Dropout(attn_pdrop)
         self.resid_dropout = nn.Dropout(resid_pdrop)
@@ -65,12 +65,12 @@ class Model(nn.Module):
 
     def __init__(self, n_embd, n_head, attn_pdrop, resid_pdrop, max_seqlen):
         super().__init__()
-        self.ln_1 = nn.LayerNorm(n_embd, dtype=torch.bfloat16)
+        self.ln_1 = nn.LayerNorm(n_embd, dtype=torch.half)
         self.attn = CausalSelfAttention(n_embd, n_head, attn_pdrop, resid_pdrop, max_seqlen)
-        self.ln_2 = nn.LayerNorm(n_embd, dtype=torch.bfloat16)
+        self.ln_2 = nn.LayerNorm(n_embd, dtype=torch.half)
         self.mlp = nn.ModuleDict(dict(
-            c_fc    = nn.Linear(n_embd, 4 * n_embd, dtype=torch.bfloat16),
-            c_proj  = nn.Linear(4 * n_embd, n_embd, dtype=torch.bfloat16),
+            c_fc    = nn.Linear(n_embd, 4 * n_embd, dtype=torch.half),
+            c_proj  = nn.Linear(4 * n_embd, n_embd, dtype=torch.half),
             act     = NewGELU(),
             dropout = nn.Dropout(resid_pdrop),
         ))
@@ -91,7 +91,7 @@ attn_pdrop = 0.0
 resid_pdrop = 0.0
 
 def get_inputs():
-    return [torch.rand(batch_size, seq_len, n_embd, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, seq_len, n_embd, dtype=torch.half)]
 
 def get_init_inputs():
     return [n_embd, n_head, attn_pdrop, resid_pdrop, max_seqlen]

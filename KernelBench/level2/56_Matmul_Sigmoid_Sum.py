@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, input_size, hidden_size):
         super(Model, self).__init__()
-        self.linear = nn.Linear(input_size, hidden_size, dtype=torch.bfloat16)
+        self.linear = nn.Linear(input_size, hidden_size, dtype=torch.half)
 
     def forward(self, x):
         """
@@ -27,7 +27,7 @@ input_size = 32768
 hidden_size = 32768
 
 def get_inputs():
-    return [torch.rand(batch_size, input_size, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, input_size, dtype=torch.half)]
 
 def get_init_inputs():
     return [input_size, hidden_size]

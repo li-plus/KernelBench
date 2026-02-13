@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, multiplier, negative_slope):
         super(Model, self).__init__()
-        self.gemm = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
+        self.gemm = nn.Linear(in_features, out_features, dtype=torch.half)
         self.multiplier = multiplier
         self.leaky_relu = nn.LeakyReLU(negative_slope)
 
@@ -24,7 +24,7 @@ multiplier = 2.0
 negative_slope = 0.1
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, multiplier, negative_slope]

@@ -12,7 +12,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, scaling_factor):
         super(Model, self).__init__()
-        self.matmul = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
+        self.matmul = nn.Linear(in_features, out_features, dtype=torch.half)
         self.scaling_factor = scaling_factor
 
     def forward(self, x):
@@ -37,7 +37,7 @@ out_features = 4096
 scaling_factor = 0.5
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, scaling_factor]

@@ -25,22 +25,22 @@ class Model(nn.Module):
         patch_dim = channels * patch_size ** 2
         
         self.patch_size = patch_size
-        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim, dtype=torch.bfloat16))
-        self.patch_to_embedding = nn.Linear(patch_dim, dim, dtype=torch.bfloat16)
-        self.cls_token = nn.Parameter(torch.randn(1, 1, dim, dtype=torch.bfloat16))
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim, dtype=torch.half))
+        self.patch_to_embedding = nn.Linear(patch_dim, dim, dtype=torch.half)
+        self.cls_token = nn.Parameter(torch.randn(1, 1, dim, dtype=torch.half))
         self.dropout = nn.Dropout(emb_dropout)
         
         self.transformer = nn.TransformerEncoder(
-            nn.TransformerEncoderLayer(d_model=dim, nhead=heads, dim_feedforward=mlp_dim, dropout=dropout, dtype=torch.bfloat16),
+            nn.TransformerEncoderLayer(d_model=dim, nhead=heads, dim_feedforward=mlp_dim, dropout=dropout, dtype=torch.half),
             num_layers=depth
         )
         
         self.to_cls_token = nn.Identity()
         self.mlp_head = nn.Sequential(
-            nn.Linear(dim, mlp_dim, dtype=torch.bfloat16),
+            nn.Linear(dim, mlp_dim, dtype=torch.half),
             nn.GELU(),
             nn.Dropout(dropout),
-            nn.Linear(mlp_dim, num_classes, dtype=torch.bfloat16)
+            nn.Linear(mlp_dim, num_classes, dtype=torch.half)
         )
     
     def forward(self, img):
@@ -78,7 +78,7 @@ dropout = 0.0
 emb_dropout = 0.0
 
 def get_inputs():
-    return [torch.rand(2, channels, image_size, image_size, dtype=torch.bfloat16)]
+    return [torch.rand(2, channels, image_size, image_size, dtype=torch.half)]
 
 def get_init_inputs():
     return [image_size, patch_size, num_classes, dim, depth, heads, mlp_dim, channels, dropout, emb_dropout]

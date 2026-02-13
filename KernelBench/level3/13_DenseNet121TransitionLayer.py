@@ -10,9 +10,9 @@ class Model(nn.Module):
         """
         super(Model, self).__init__()
         self.transition = nn.Sequential(
-            nn.BatchNorm2d(num_input_features, dtype=torch.bfloat16),
+            nn.BatchNorm2d(num_input_features, dtype=torch.half),
             nn.ReLU(inplace=True),
-            nn.Conv2d(num_input_features, num_output_features, kernel_size=1, bias=False, dtype=torch.bfloat16),
+            nn.Conv2d(num_input_features, num_output_features, kernel_size=1, bias=False, dtype=torch.half),
             nn.AvgPool2d(kernel_size=2, stride=2)
         )
 
@@ -29,7 +29,7 @@ num_output_features = 64
 height, width = 256, 256
 
 def get_inputs():
-    return [torch.rand(batch_size, num_input_features, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, num_input_features, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_input_features, num_output_features]

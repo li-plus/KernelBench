@@ -30,9 +30,9 @@ def get_inputs():
     Returns:
         list: List containing two symmetric tensors A and B.
     """
-    A = torch.rand(N, N, dtype=torch.bfloat16)
+    A = torch.rand(N, N, dtype=torch.half)
     A = (A + A.T) / 2  # Ensure symmetry
-    B = torch.rand(N, N, dtype=torch.bfloat16)
+    B = torch.rand(N, N, dtype=torch.half)
     B = (B + B.T) / 2  # Ensure symmetry
     return [A, B]
 

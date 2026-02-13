@@ -16,8 +16,8 @@ class Model(nn.Module):
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.lstm = nn.LSTM(input_size, hidden_size, num_layers,
-                            batch_first=True, dropout=dropout, bidirectional=False, dtype=torch.bfloat16)
-        self.fc = nn.Linear(hidden_size, output_size, dtype=torch.bfloat16)
+                            batch_first=True, dropout=dropout, bidirectional=False, dtype=torch.half)
+        self.fc = nn.Linear(hidden_size, output_size, dtype=torch.half)
 
     def forward(self, x, h0=None, c0=None):
         """
@@ -31,9 +31,9 @@ class Model(nn.Module):
         batch_size = x.size(0)
 
         if h0 is None:
-            h0 = torch.randn(self.num_layers, batch_size, self.hidden_size, device=x.device, dtype=torch.bfloat16)
+            h0 = torch.randn(self.num_layers, batch_size, self.hidden_size, device=x.device, dtype=torch.half)
         if c0 is None:
-            c0 = torch.randn(self.num_layers, batch_size, self.hidden_size, device=x.device, dtype=torch.bfloat16)
+            c0 = torch.randn(self.num_layers, batch_size, self.hidden_size, device=x.device, dtype=torch.half)
 
         out, _ = self.lstm(x, (h0, c0))  # out: (batch_size, seq_length, hidden_size)
         out = self.fc(out[:, -1, :])     # out: (batch_size, output_size)
@@ -50,7 +50,7 @@ output_size = 10
 dropout = 0.0
 
 def get_inputs():
-    return [torch.rand(batch_size, sequence_length, input_size, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, sequence_length, input_size, dtype=torch.half)]
 
 def get_init_inputs():
     return [input_size, hidden_size, num_layers, output_size, dropout]

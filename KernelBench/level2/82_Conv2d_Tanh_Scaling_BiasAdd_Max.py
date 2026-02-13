@@ -7,9 +7,9 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, scaling_factor, bias_shape, pool_kernel_size):
         super(Model, self).__init__()
-        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
+        self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, dtype=torch.half)
         self.scaling_factor = scaling_factor
-        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.bfloat16))
+        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.half))
         self.max_pool = nn.MaxPool2d(pool_kernel_size)
 
     def forward(self, x):
@@ -35,7 +35,7 @@ bias_shape = (out_channels, 1, 1)
 pool_kernel_size = 4
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, scaling_factor, bias_shape, pool_kernel_size]

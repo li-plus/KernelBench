@@ -12,8 +12,8 @@ class Model(nn.Module):
         super(Model, self).__init__()
         
         # Initial convolutional layer
-        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False, dtype=torch.bfloat16)
-        self.bn1 = nn.BatchNorm2d(32, dtype=torch.bfloat16)
+        self.conv1 = nn.Conv2d(3, 32, kernel_size=3, stride=2, padding=1, bias=False, dtype=torch.half)
+        self.bn1 = nn.BatchNorm2d(32, dtype=torch.half)
         
         # MBConv blocks
         self.mbconv1 = self._make_mbconv_block(32, 16, 1, 1)
@@ -25,11 +25,11 @@ class Model(nn.Module):
         self.mbconv7 = self._make_mbconv_block(192, 320, 1, 6)
         
         # Final convolutional layer
-        self.conv2 = nn.Conv2d(320, 1280, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16)
-        self.bn2 = nn.BatchNorm2d(1280, dtype=torch.bfloat16)
+        self.conv2 = nn.Conv2d(320, 1280, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half)
+        self.bn2 = nn.BatchNorm2d(1280, dtype=torch.half)
         
         # Fully connected layer
-        self.fc = nn.Linear(1280, num_classes, dtype=torch.bfloat16)
+        self.fc = nn.Linear(1280, num_classes, dtype=torch.half)
     
     def _make_mbconv_block(self, in_channels, out_channels, stride, expand_ratio):
         """
@@ -43,14 +43,14 @@ class Model(nn.Module):
         """
         hidden_dim = round(in_channels * expand_ratio)
         return nn.Sequential(
-            nn.Conv2d(in_channels, hidden_dim, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(hidden_dim, dtype=torch.bfloat16),
+            nn.Conv2d(in_channels, hidden_dim, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(hidden_dim, dtype=torch.half),
             nn.ReLU6(inplace=True),
-            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, stride=stride, padding=1, groups=hidden_dim, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(hidden_dim, dtype=torch.bfloat16),
+            nn.Conv2d(hidden_dim, hidden_dim, kernel_size=3, stride=stride, padding=1, groups=hidden_dim, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(hidden_dim, dtype=torch.half),
             nn.ReLU6(inplace=True),
-            nn.Conv2d(hidden_dim, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.bfloat16),
-            nn.BatchNorm2d(out_channels, dtype=torch.bfloat16),
+            nn.Conv2d(hidden_dim, out_channels, kernel_size=1, stride=1, padding=0, bias=False, dtype=torch.half),
+            nn.BatchNorm2d(out_channels, dtype=torch.half),
         )
     
     def forward(self, x):
@@ -83,7 +83,7 @@ input_shape = (3, 240, 240)
 num_classes = 1000
 
 def get_inputs():
-    return [torch.rand(batch_size, *input_shape, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, *input_shape, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_classes]

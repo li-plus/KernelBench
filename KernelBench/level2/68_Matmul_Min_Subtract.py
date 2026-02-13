@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, constant):
         super(Model, self).__init__()
-        self.linear = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
-        self.constant = nn.Parameter(torch.tensor(constant, dtype=torch.bfloat16))
+        self.linear = nn.Linear(in_features, out_features, dtype=torch.half)
+        self.constant = nn.Parameter(torch.tensor(constant, dtype=torch.half))
 
     def forward(self, x):
         x = self.linear(x)
@@ -22,7 +22,7 @@ out_features = 16384
 constant = 2.0
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, constant]

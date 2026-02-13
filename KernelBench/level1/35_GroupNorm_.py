@@ -14,7 +14,7 @@ class Model(nn.Module):
             num_groups (int): Number of groups to divide the channels into.
         """
         super(Model, self).__init__()
-        self.gn = nn.GroupNorm(num_groups=num_groups, num_channels=num_features, dtype=torch.bfloat16)
+        self.gn = nn.GroupNorm(num_groups=num_groups, num_channels=num_features, dtype=torch.half)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
@@ -35,7 +35,7 @@ dim1 = 512
 dim2 = 512
 
 def get_inputs():
-    x = torch.rand(batch_size, features, dim1, dim2, dtype=torch.bfloat16)
+    x = torch.rand(batch_size, features, dim1, dim2, dtype=torch.half)
     return [x]
 
 def get_init_inputs():

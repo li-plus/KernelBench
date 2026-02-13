@@ -16,9 +16,9 @@ class Mlp(nn.Module):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
-        self.fc1 = nn.Linear(in_features, hidden_features, dtype=torch.bfloat16)
+        self.fc1 = nn.Linear(in_features, hidden_features, dtype=torch.half)
         self.act = act_layer()
-        self.fc2 = nn.Linear(hidden_features, out_features, dtype=torch.bfloat16)
+        self.fc2 = nn.Linear(hidden_features, out_features, dtype=torch.half)
         self.drop = nn.Dropout(drop)
 
     def forward(self, x):
@@ -97,15 +97,15 @@ class SwinMLPBlock(nn.Module):
         self.padding = [self.window_size - self.shift_size, self.shift_size,
                         self.window_size - self.shift_size, self.shift_size]  # P_l,P_r,P_t,P_b
 
-        self.norm1 = norm_layer(dim, dtype=torch.bfloat16)
+        self.norm1 = norm_layer(dim, dtype=torch.half)
         # use group convolution to implement multi-head MLP
         self.spatial_mlp = nn.Conv1d(self.num_heads * self.window_size ** 2,
                                      self.num_heads * self.window_size ** 2,
                                      kernel_size=1,
-                                     groups=self.num_heads, dtype=torch.bfloat16)
+                                     groups=self.num_heads, dtype=torch.half)
 
         self.drop_path = nn.Identity()
-        self.norm2 = norm_layer(dim, dtype=torch.bfloat16)
+        self.norm2 = norm_layer(dim, dtype=torch.half)
         mlp_hidden_dim = int(dim * mlp_ratio)
         self.mlp = Mlp(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop)
 
@@ -172,8 +172,8 @@ class PatchMerging(nn.Module):
         super().__init__()
         self.input_resolution = input_resolution
         self.dim = dim
-        self.reduction = nn.Linear(4 * dim, 2 * dim, bias=False, dtype=torch.bfloat16)
-        self.norm = norm_layer(4 * dim, dtype=torch.bfloat16)
+        self.reduction = nn.Linear(4 * dim, 2 * dim, bias=False, dtype=torch.half)
+        self.norm = norm_layer(4 * dim, dtype=torch.half)
 
     def forward(self, x):
         """
@@ -284,9 +284,9 @@ class PatchEmbed(nn.Module):
         self.in_chans = in_chans
         self.embed_dim = embed_dim
 
-        self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size, dtype=torch.bfloat16)
+        self.proj = nn.Conv2d(in_chans, embed_dim, kernel_size=patch_size, stride=patch_size, dtype=torch.half)
         if norm_layer is not None:
-            self.norm = norm_layer(embed_dim, dtype=torch.bfloat16)
+            self.norm = norm_layer(embed_dim, dtype=torch.half)
         else:
             self.norm = None
 
@@ -372,9 +372,9 @@ class Model(nn.Module):
                                use_checkpoint=use_checkpoint)
             self.layers.append(layer)
 
-        self.norm = norm_layer(self.num_features, dtype=torch.bfloat16)
+        self.norm = norm_layer(self.num_features, dtype=torch.half)
         self.avgpool = nn.AdaptiveAvgPool1d(1)
-        self.head = nn.Linear(self.num_features, num_classes, dtype=torch.bfloat16) if num_classes > 0 else nn.Identity()
+        self.head = nn.Linear(self.num_features, num_classes, dtype=torch.half) if num_classes > 0 else nn.Identity()
 
     def forward_features(self, x):
         x = self.patch_embed(x)
@@ -397,7 +397,7 @@ batch_size = 10
 image_size = 224
 
 def get_inputs():
-    return [torch.rand(batch_size, 3, image_size, image_size, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, 3, image_size, image_size, dtype=torch.half)]
 
 def get_init_inputs():
     return []

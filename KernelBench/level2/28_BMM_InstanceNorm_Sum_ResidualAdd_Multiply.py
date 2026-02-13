@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, eps=1e-5, momentum=0.1):
         super(Model, self).__init__()
-        self.bmm = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
-        self.instance_norm = nn.InstanceNorm2d(out_features, eps=eps, momentum=momentum, dtype=torch.bfloat16)
+        self.bmm = nn.Linear(in_features, out_features, dtype=torch.half)
+        self.instance_norm = nn.InstanceNorm2d(out_features, eps=eps, momentum=momentum, dtype=torch.half)
 
     def forward(self, x, y):
         """
@@ -30,7 +30,7 @@ in_features = 8192  # Increased input features
 out_features = 8192  # Increased output features
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16), torch.rand(batch_size, out_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half), torch.rand(batch_size, out_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features]

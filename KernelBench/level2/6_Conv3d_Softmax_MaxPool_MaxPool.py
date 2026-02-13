@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, pool_kernel_size):
         super(Model, self).__init__()
-        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.bfloat16)
+        self.conv = nn.Conv3d(in_channels, out_channels, kernel_size, dtype=torch.half)
         self.pool1 = nn.MaxPool3d(pool_kernel_size)
         self.pool2 = nn.MaxPool3d(pool_kernel_size)
 
@@ -32,7 +32,7 @@ kernel_size = 3
 pool_kernel_size = 2
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, depth, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, pool_kernel_size]

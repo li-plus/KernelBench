@@ -7,7 +7,7 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, output_padding, bias=True):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, output_padding=output_padding, bias=bias, dtype=torch.bfloat16)
+        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, output_padding=output_padding, bias=bias, dtype=torch.half)
         self.softmax = nn.Softmax(dim=1)
         self.sigmoid = nn.Sigmoid()
 
@@ -34,7 +34,7 @@ padding = 1
 output_padding = 1
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, D, H, W, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, D, H, W, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding, output_padding]

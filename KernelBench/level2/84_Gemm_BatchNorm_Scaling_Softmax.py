@@ -7,9 +7,9 @@ class Model(nn.Module):
     """
     def __init__(self, in_features, out_features, bn_eps=1e-5, bn_momentum=0.1, scale_shape=(1,)):
         super(Model, self).__init__()
-        self.gemm = nn.Linear(in_features, out_features, dtype=torch.bfloat16)
-        self.bn = nn.BatchNorm1d(out_features, eps=bn_eps, momentum=bn_momentum, dtype=torch.bfloat16)
-        self.scale = nn.Parameter(torch.ones(scale_shape, dtype=torch.bfloat16))
+        self.gemm = nn.Linear(in_features, out_features, dtype=torch.half)
+        self.bn = nn.BatchNorm1d(out_features, eps=bn_eps, momentum=bn_momentum, dtype=torch.half)
+        self.scale = nn.Parameter(torch.ones(scale_shape, dtype=torch.half))
         self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
@@ -33,7 +33,7 @@ bn_momentum = 0.1
 scale_shape = (1,)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_features, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_features, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_features, out_features, bn_eps, bn_momentum, scale_shape]

@@ -7,8 +7,8 @@ class Model(nn.Module):
     """
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, output_padding, bias_shape):
         super(Model, self).__init__()
-        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, output_padding=output_padding, dtype=torch.bfloat16)
-        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.bfloat16))
+        self.conv_transpose = nn.ConvTranspose3d(in_channels, out_channels, kernel_size, stride=stride, padding=padding, output_padding=output_padding, dtype=torch.half)
+        self.bias = nn.Parameter(torch.randn(bias_shape, dtype=torch.half))
 
     def forward(self, x, add_input):
         """
@@ -35,7 +35,7 @@ output_padding = 1
 bias_shape = (out_channels, 1, 1, 1, 1)
 
 def get_inputs():
-    return [torch.rand(batch_size, in_channels, D, H, W, dtype=torch.bfloat16), torch.rand(batch_size, out_channels, D*stride, H*stride, W*stride, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, in_channels, D, H, W, dtype=torch.half), torch.rand(batch_size, out_channels, D*stride, H*stride, W*stride, dtype=torch.half)]
 
 def get_init_inputs():
     return [in_channels, out_channels, kernel_size, stride, padding, output_padding, bias_shape]

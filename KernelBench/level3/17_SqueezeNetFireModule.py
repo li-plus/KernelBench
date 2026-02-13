@@ -12,13 +12,13 @@ class Model(nn.Module):
         """
         super(Model, self).__init__()
         
-        self.squeeze = nn.Conv2d(in_channels, squeeze_channels, kernel_size=1, dtype=torch.bfloat16)
+        self.squeeze = nn.Conv2d(in_channels, squeeze_channels, kernel_size=1, dtype=torch.half)
         self.squeeze_activation = nn.ReLU(inplace=True)
         
-        self.expand1x1 = nn.Conv2d(squeeze_channels, expand1x1_channels, kernel_size=1, dtype=torch.bfloat16)
+        self.expand1x1 = nn.Conv2d(squeeze_channels, expand1x1_channels, kernel_size=1, dtype=torch.half)
         self.expand1x1_activation = nn.ReLU(inplace=True)
         
-        self.expand3x3 = nn.Conv2d(squeeze_channels, expand3x3_channels, kernel_size=3, padding=1, dtype=torch.bfloat16)
+        self.expand3x3 = nn.Conv2d(squeeze_channels, expand3x3_channels, kernel_size=3, padding=1, dtype=torch.half)
         self.expand3x3_activation = nn.ReLU(inplace=True)
     
     def forward(self, x):
@@ -42,7 +42,7 @@ expand1x1_channels = 64
 expand3x3_channels = 64
 
 def get_inputs():
-    return [torch.rand(batch_size, num_input_features, height, width, dtype=torch.bfloat16)]
+    return [torch.rand(batch_size, num_input_features, height, width, dtype=torch.half)]
 
 def get_init_inputs():
     return [num_input_features, squeeze_channels, expand1x1_channels, expand3x3_channels]
